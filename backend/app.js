@@ -23,7 +23,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Routes
-app.use('/api/register', studentRoutes);
+app.use('/api/students', studentRoutes);
 
 // Basic Route for testing
 app.get('/api/health', (req, res) => {

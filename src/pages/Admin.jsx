@@ -23,9 +23,14 @@ function Admin() {
 
   useEffect(() => {
     const adminPassword = sessionStorage.getItem('adminPassword');
-    if (adminPassword !== 'admin1234') {
+    if (!adminPassword) {
       navigate('/');
-    } else {
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const adminPassword = sessionStorage.getItem('adminPassword');
+    if (adminPassword) {
       fetchStudents();
     }
   }, [page, searchId, searchName, filterBranch, sortOrder, navigate]);
@@ -51,7 +56,7 @@ function Admin() {
     } catch (error) {
       if (error.response?.status === 401) {
         toast.error('Session expired. Please login again.');
-        sessionStorage.removeItem('adminAuth');
+        sessionStorage.removeItem('adminPassword');
         navigate('/');
       } else {
         toast.error('Failed to fetch students');

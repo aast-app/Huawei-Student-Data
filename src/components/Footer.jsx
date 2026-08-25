@@ -8,7 +8,7 @@ const Footer = () => {
   if (location.pathname === '/') return null;
 
   return (
-    <div className="fixed bottom-0 left-0 w-full px-6 lg:px-10 py-3 flex justify-between items-center border-t border-gray-200/50 bg-white/80 backdrop-blur-md z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <div className="hidden lg:flex fixed bottom-0 left-0 w-full px-6 lg:px-10 py-3 justify-between items-center border-t border-gray-200/50 bg-white/80 backdrop-blur-md z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       {/* Left: Logos */}
       <div className="flex items-center gap-4 lg:gap-6 ml-2">
         <img src="/aast-logo.png" alt="AAST" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100" />

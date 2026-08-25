@@ -1,5 +1,6 @@
 import express from 'express';
 import Student from '../models/Student.js';
+import Setting from '../models/Setting.js';
 import connectDB from '../config/db.js';
 
 const router = express.Router();
@@ -71,13 +72,15 @@ router.post('/login', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const password = req.headers['x-admin-password'];
-  
-  if (password !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
-  }
 
   try {
     await connectDB();
+
+    // Verify Password from MongoDB
+    const settings = await Setting.findOne();
+    if (!settings || password !== settings.adminPassword) {
+      return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
+    }
 
     // Build Query
     const { searchId, searchName, branch, sortOrder = 'desc' } = req.query;

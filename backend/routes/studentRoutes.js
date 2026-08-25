@@ -79,23 +79,24 @@ router.get('/', async (req, res) => {
   try {
     await connectDB();
 
-    // If exporting CSV, fetch everything ignoring pagination
+    // Build Query
+    const { searchId, searchName, branch, sortOrder = 'desc' } = req.query;
+    const query = {};
+    if (searchId) query.huaweiId = { $regex: searchId.trim(), $options: 'i' };
+    if (searchName) query.name = { $regex: searchName.trim(), $options: 'i' };
+    if (branch && branch !== 'All Branches') query.branch = branch;
+
+    const sort = { createdAt: sortOrder === 'asc' ? 1 : -1 };
+
+    // If exporting CSV, fetch everything matching the query ignoring pagination
     if (req.query.exportAll === 'true') {
-      const students = await Student.find({}).sort({ createdAt: -1 });
+      const students = await Student.find(query).sort(sort);
       return res.status(200).json(students);
     }
 
-    // Pagination & Filters
+    // Pagination
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 50;
-    const { searchId, searchName, branch, sortOrder = 'desc' } = req.query;
-
-    const query = {};
-    if (searchId) query.huaweiId = { $regex: searchId.trim(), $options: 'i' }; // case insensitive regex
-    if (searchName) query.name = { $regex: searchName.trim(), $options: 'i' };
-    if (branch) query.branch = branch;
-
-    const sort = { createdAt: sortOrder === 'asc' ? 1 : -1 };
 
     const students = await Student.find(query)
       .sort(sort)

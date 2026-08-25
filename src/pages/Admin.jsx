@@ -77,7 +77,7 @@ function Admin() {
         }
       });
       
-      const allStudents = response.data.students;
+      const allStudents = Array.isArray(response.data) ? response.data : response.data.students;
       
       const headers = ["Name", "Huawei ID", "Email", "Phone", "Branch", "Registration Date"];
       let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";

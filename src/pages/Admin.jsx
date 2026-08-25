@@ -197,7 +197,8 @@ function Admin() {
 
           {/* Table */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50/50">
                   <tr>
@@ -242,6 +243,46 @@ function Admin() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="block lg:hidden divide-y divide-gray-100">
+              {loading ? (
+                <div className="py-20 flex justify-center"><Loader /></div>
+              ) : students.length === 0 ? (
+                <div className="px-6 py-12 text-center text-gray-500 font-medium">No students found matching your filters.</div>
+              ) : (
+                students.map((student) => (
+                  <div key={student._id} className="p-5 hover:bg-gray-50 transition-colors flex flex-col gap-3">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="font-bold text-gray-900 text-lg break-words">{student.name}</div>
+                      <span className={`px-2.5 py-1 inline-flex text-[0.65rem] sm:text-xs font-bold rounded-full shrink-0 ${
+                        student.branch === 'AASTMT-ALex' ? 'bg-[#3b82f6]/10 text-[#1d4ed8]' : 'bg-[#10b981]/10 text-[#047857]'
+                      }`}>
+                        {student.branch}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-col gap-1.5 mt-1">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-400 w-16 shrink-0">ID:</span>
+                        <span className="font-mono text-[#e61d2b] font-bold truncate">{student.huaweiId}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-400 w-16 shrink-0">Email:</span>
+                        <span className="text-gray-700 font-medium break-all">{student.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-400 w-16 shrink-0">Phone:</span>
+                        <span className="text-gray-700 font-medium">{student.phoneNumber}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[0.7rem] mt-2 text-gray-400 font-medium">
+                        <span>Registered: {new Date(student.createdAt).toLocaleDateString()} at {new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
             
             {/* Pagination Controls */}

@@ -4,9 +4,6 @@ import connectDB from '../config/db.js';
 
 const router = express.Router();
 
-// @route   POST /api/students/register
-// @desc    Register a new student
-// @access  Public
 router.post('/register', async (req, res) => {
   const { name, huaweiId, email, phoneNumber, branch } = req.body;
 
@@ -14,10 +11,14 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'Please include all fields' });
   }
 
-  try {
-    await connectDB(); // Ensure DB is connected before interacting with it!
+  // Data Hygiene: trim spaces and force to lowercase for uniqueness
+  const normalizedId = huaweiId.trim().toLowerCase();
+  const normalizedEmail = email.trim().toLowerCase();
 
-    const existingStudent = await Student.findOne({ huaweiId });
+  try {
+    await connectDB();
+
+    const existingStudent = await Student.findOne({ huaweiId: normalizedId });
 
     if (existingStudent) {
       return res.status(400).json({ 
@@ -25,12 +26,11 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // If ID does not exist at all, create a brand new student
     const student = await Student.create({
-      name,
-      huaweiId,
-      email,
-      phoneNumber,
+      name: name.trim(),
+      huaweiId: normalizedId,
+      email: normalizedEmail,
+      phoneNumber: phoneNumber.trim(),
       branch
     });
 
@@ -44,9 +44,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// @route   POST /api/students/login
-// @desc    Login a returning student using Huawei ID
-// @access  Public
 router.post('/login', async (req, res) => {
   const { huaweiId } = req.body;
 
@@ -54,9 +51,12 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ message: 'Please provide a Huawei ID' });
   }
 
+  // Data Hygiene: trim and lowercase before searching
+  const normalizedId = huaweiId.trim().toLowerCase();
+
   try {
     await connectDB();
-    const student = await Student.findOne({ huaweiId });
+    const student = await Student.findOne({ huaweiId: normalizedId });
 
     if (student) {
       res.status(200).json({ branch: student.branch });
@@ -69,9 +69,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route   GET /api/students
-// @desc    Get all students
-// @access  Private (Admin only)
 router.get('/', async (req, res) => {
   const password = req.headers['x-admin-password'];
   
@@ -81,8 +78,39 @@ router.get('/', async (req, res) => {
 
   try {
     await connectDB();
-    const students = await Student.find({}).sort({ createdAt: -1 });
-    res.status(200).json(students);
+
+    // If exporting CSV, fetch everything ignoring pagination
+    if (req.query.exportAll === 'true') {
+      const students = await Student.find({}).sort({ createdAt: -1 });
+      return res.status(200).json(students);
+    }
+
+    // Pagination & Filters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const { searchId, searchName, branch, sortOrder = 'desc' } = req.query;
+
+    const query = {};
+    if (searchId) query.huaweiId = { $regex: searchId.trim(), $options: 'i' }; // case insensitive regex
+    if (searchName) query.name = { $regex: searchName.trim(), $options: 'i' };
+    if (branch) query.branch = branch;
+
+    const sort = { createdAt: sortOrder === 'asc' ? 1 : -1 };
+
+    const students = await Student.find(query)
+      .sort(sort)
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await Student.countDocuments(query);
+
+    res.status(200).json({
+      students,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      totalStudents: count
+    });
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Server error fetching data' });

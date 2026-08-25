@@ -1,5 +1,6 @@
 import express from 'express';
 import Student from '../models/Student.js';
+import connectDB from '../config/db.js';
 
 const router = express.Router();
 
@@ -14,6 +15,8 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    await connectDB(); // Ensure DB is connected before interacting with it!
+
     const student = await Student.create({
       name,
       email,

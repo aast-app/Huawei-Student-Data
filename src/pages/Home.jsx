@@ -139,9 +139,9 @@ function Home() {
           <div className="w-full max-w-xl form-container flex flex-col justify-center my-auto py-[2vh]">
             
             {/* CENTERED LOGOS */}
-            <div className="w-full flex justify-center items-center gap-[4vw] lg:gap-[6vw] mb-[4vh] overflow-visible">
-              <img src="/aast-logo.png" alt="AAST Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md transition-all duration-300" />
-              <div className="h-[12vh] min-h-[4rem] max-h-[100px] w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
+            <div className="w-full flex justify-center items-center gap-[4vw] lg:gap-[6vw] mb-[6vh] lg:mb-[8vh] overflow-visible">
+              <img src="/aast-logo.png" alt="AAST Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.3] lg:scale-[1.45] transform origin-center transition-all duration-300" />
+              <div className="h-[8vh] min-h-[3rem] max-h-[80px] w-[2px] bg-black opacity-30 rounded-full"></div>
               <img src="/huawei-logo.png" alt="Huawei Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.2] lg:scale-[1.35] transform origin-center transition-all duration-300" />
             </div>
 
@@ -233,7 +233,8 @@ function Home() {
                   options={[
                     { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                     { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
-                    { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' }
+                    { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
+                    { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' }
                   ]}
                 />
                 {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}
@@ -280,7 +281,7 @@ function Home() {
         <div className="w-full px-6 lg:px-10 py-3 shrink-0 flex justify-between items-center border-t border-gray-100 bg-white z-20">
           <div className="flex items-center gap-4 lg:gap-6 ml-2">
             <img src="/aast-logo.png" alt="AAST" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100" />
-            <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[2]" />
+            <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[1.2]" />
           </div>
           <div className="text-[0.6rem] lg:text-[0.7rem] text-gray-400 font-medium text-center hidden sm:block">
             &copy; {new Date().getFullYear()} AAST. Developed by Eng. Youssef Wael.

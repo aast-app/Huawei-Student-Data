@@ -8,25 +8,20 @@ const NetworkBackground = () => {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     let particles = [];
+    let bgGradient = null;
     
-    // Adjust density based on screen size
-    const numParticles = 45; // Reduced from 80 for performance and less clutter
-    const connectionDistance = 110; // Reduced to prevent a tangled mess
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    
-    window.addEventListener('resize', resize);
-    resize();
+    // Dynamic density: aggressively reduce count on mobile for max performance
+    const getNumParticles = () => window.innerWidth < 768 ? 12 : 30;
+    let numParticles = getNumParticles();
+    const connectionDistance = 110; 
+    const connectionDistanceSq = connectionDistance * connectionDistance; // Avoid sqrt when possible
 
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.4; // Slowed down significantly
-        this.vy = (Math.random() - 0.5) * 0.4; // Slowed down significantly
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
         this.radius = Math.random() * 2 + 1; 
         this.isRed = Math.random() > 0.85; 
       }
@@ -34,24 +29,23 @@ const NetworkBackground = () => {
       update() {
         this.x += this.vx;
         this.y += this.vy;
-
         if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
         if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
       }
 
       draw() {
+        // PERFORMANCE: Fake glow using simple transparent circle instead of native shadowBlur (which destroys FPS)
+        if (this.isRed) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(230, 29, 43, 0.15)';
+          ctx.fill();
+        }
+
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        
-        // Subtle Gaussian blur glow (reduced for performance)
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = this.isRed ? '#e61d2b' : '#96c8ff';
-        
         ctx.fillStyle = this.isRed ? 'rgba(230, 29, 43, 0.9)' : 'rgba(255, 255, 255, 0.8)';
         ctx.fill();
-
-        // Reset shadow immediately so lines don't get blurred
-        ctx.shadowBlur = 0;
       }
     }
 
@@ -62,39 +56,55 @@ const NetworkBackground = () => {
       }
     };
 
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      numParticles = getNumParticles();
       
-      // Draw rich navy gradient background
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, '#0a192f');
-      gradient.addColorStop(1, '#020c1b');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // PERFORMANCE: Cache the gradient instead of rebuilding it 60 times a second
+      bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      bgGradient.addColorStop(0, '#0a192f');
+      bgGradient.addColorStop(1, '#020c1b');
+      
+      init();
+    };
+    
+    window.addEventListener('resize', resize);
+    resize();
 
-      // Draw and update particles
+    const animate = () => {
+      // PERFORMANCE: Use cached gradient background
+      if (bgGradient) {
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      
       for (let i = 0; i < particles.length; i++) {
         particles[i].update();
         particles[i].draw();
 
         // Connect particles with lines
-        for (let j = i; j < particles.length; j++) {
+        // PERFORMANCE: Start j at i + 1 to avoid checking self
+        for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < connectionDistance) {
+          // PERFORMANCE: Check squared distance first to avoid heavy Math.sqrt calculation on every pair
+          if (distSq < connectionDistanceSq) {
+            const distance = Math.sqrt(distSq);
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             
             const opacity = 1 - distance / connectionDistance;
             
-            // Subtle red glow if connecting a red node, otherwise white/blue
             if (particles[i].isRed || particles[j].isRed) {
-              ctx.strokeStyle = `rgba(230, 29, 43, ${opacity * 0.25})`;
+              ctx.strokeStyle = `rgba(230, 29, 43, ${opacity * 0.45})`;
             } else {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.1})`;
+              ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.25})`;
             }
             
             ctx.lineWidth = 1;
@@ -102,11 +112,10 @@ const NetworkBackground = () => {
           }
         }
       }
-
+      
       animationFrameId = requestAnimationFrame(animate);
     };
-
-    init();
+    
     animate();
 
     return () => {

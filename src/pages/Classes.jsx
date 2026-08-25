@@ -31,6 +31,16 @@ const BRANCH_CLASSES = {
     { shortName: '5G', longName: '5G_COURSE_AAST-IECDokki', code: 'TBA', icon: Radio, color: 'text-emerald-600', bg: 'bg-emerald-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787641471243&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Security', longName: 'SECURITY_COURSE_AAST-IECDokki', code: 'TBA', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787640234917&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'IoT', longName: 'loT_COURSE-AAST_IECDokki', code: 'TBA', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787640503867&courseType=ICT&urlForm=course%2Fmanagement' },
+  ],
+  'AASTMT-Fouad': [
+    { shortName: 'AI', longName: 'AI_COURSE_AAST-IECFouad', code: 'TBA', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787606079469&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Big Data', longName: 'Big Data_COURSE_AAST-IECFouad', code: 'TBA', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787644482638&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Computing', longName: 'Cloud Computing_COURSE_AAST-IECFouad', code: 'TBA', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787651009288&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Service', longName: 'Cloud Service_COURSE_AAST-IECFouad', code: 'TBA', icon: Server, color: 'text-cyan-600', bg: 'bg-cyan-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787650740969&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: '5G', longName: '5G_COURSE_AAST-IECFouad', code: 'TBA', icon: Radio, color: 'text-emerald-600', bg: 'bg-emerald-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787644346922&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Datacom', longName: 'Datacom_COURSE_AAST-IECFouad', code: 'TBA', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787644679119&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Security', longName: 'Security_COURSE-AAST-IECFouad', code: 'TBA', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787643470886&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'IoT', longName: 'IoT_COURSE_AAST-IECFouad', code: 'TBA', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787643707388&courseType=ICT&urlForm=course%2Fmanagement' },
   ]
 };
 
@@ -39,6 +49,7 @@ function Classes() {
   const navigate = useNavigate();
   const branch = searchParams.get('branch');
   const [showModal, setShowModal] = useState(true);
+  const [hasAgreed, setHasAgreed] = useState(false);
   const studentName = sessionStorage.getItem('studentName');
 
   useEffect(() => {
@@ -71,22 +82,86 @@ function Classes() {
               exit={{ opacity: 0 }}
             >
               <motion.div 
-                className="modal-content !max-w-md text-center flex flex-col items-center"
+                className="modal-content !max-w-2xl text-center flex flex-col items-center w-full mx-4"
                 initial={{ scale: 0.9, opacity: 0, y: 15 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 15 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               >
-                <div className="bg-red-50 p-4 rounded-full mb-4 mt-2">
+                <div className="bg-red-50 p-4 rounded-full mb-3 mt-2 shadow-sm">
                   <ShieldAlert className="h-10 w-10 text-[#e61d2b]" />
                 </div>
-                <h3 className="mb-2 text-[#e61d2b]">Important Notice</h3>
-                <p className="text-gray-600 mb-6 font-medium text-sm leading-relaxed px-4">
-                  Upon completing your course, you must immediately forward your certificate to <br/>
-                  <a href="mailto:iasc.huawei@aast.edu" className="text-[#3b82f6] hover:underline font-bold text-base mt-1 inline-block">iasc.huawei@aast.edu</a>
-                </p>
-                <button onClick={() => setShowModal(false)} className="btn-primary w-full">
-                  I Understand
+                <h3 className="mb-5 text-[#e61d2b] text-2xl font-black tracking-tight">Important Notice</h3>
+                
+                <div dir="rtl" className="text-right w-full px-2 md:px-6 mb-6">
+                  <p className="text-gray-800 font-bold text-base md:text-lg mb-5 leading-relaxed text-center">
+                    📜 يرجى إرسال شهادة إتمام الكورس إلينا، حيث سيتم الاعتماد عليها في متابعة واستكمال ملفكم التدريبي.
+                  </p>
+                  
+                  <div className="bg-blue-50/60 border border-blue-100 rounded-2xl p-5 mb-5 shadow-sm">
+                    <p className="text-blue-900 font-bold mb-4 text-sm md:text-base border-b border-blue-200/60 pb-3">
+                      ✨ إتمام الكورس وإرسال الشهادة يتيح لكم فرصة الاستفادة من العديد من المزايا:
+                    </p>
+                    <ul className="space-y-3 text-gray-700 font-medium text-sm md:text-base pr-2">
+                      <li className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0 shadow-sm"></div>
+                        <span>🎓 الأولوية في منح تدريبية مجانية أخرى من هواوي</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0 shadow-sm"></div>
+                        <span>💰 خصومات مميزة على اختبارات وشهادات هواوي الدولية</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0 shadow-sm"></div>
+                        <span>💼 فرص حضور معارض التوظيف الخاصة بهواوي HIRE</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0 shadow-sm"></div>
+                        <span>🏆 الأولوية في الالتحاق والمشاركة في المسابقات والبرامج الدولية الخاصة بهواوي، ومنها Talent Care Program</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 mb-5 border border-emerald-100 shadow-sm text-center">
+                    <p className="text-emerald-800 font-bold text-sm md:text-base">
+                      🚀 كل كورس تنجحون في إتمامه هو خطوة جديدة نحو فرص تدريبية ومهنية أكبر مع Huawei & AAST.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-xl p-5 text-center border border-gray-200 mb-5 shadow-sm">
+                    <p className="text-gray-600 text-sm font-bold mb-2">
+                      يرجى إرسال الشهادة فور إتمامكم الكورس على البريد التالي:
+                    </p>
+                    <a href="mailto:iasc.huawei@aast.edu" dir="ltr" className="text-[#3b82f6] hover:text-blue-700 hover:underline font-black text-xl inline-block transition-colors tracking-wide">
+                      iasc.huawei@aast.edu
+                    </a>
+                  </div>
+
+                  <p className="text-[#e61d2b] font-bold text-xs md:text-sm text-center bg-red-50/50 p-3 rounded-lg border border-red-100">
+                    ⚠️ تنبيه: نرجو التأكد من صحة البيانات المرسلة ومطابقتها للبيانات المسجلة على حساب Huawei الخاص بكم.
+                  </p>
+                </div>
+
+                <div className="w-full max-w-sm mb-5 flex items-center justify-center gap-3 bg-gray-50/80 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => setHasAgreed(!hasAgreed)}>
+                  <input 
+                    type="checkbox" 
+                    id="agreeCheck"
+                    className="w-5 h-5 accent-[#e61d2b] cursor-pointer shrink-0"
+                    checked={hasAgreed}
+                    onChange={(e) => setHasAgreed(e.target.checked)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <label htmlFor="agreeCheck" className="text-gray-700 font-bold text-sm md:text-base cursor-pointer select-none pointer-events-none" dir="rtl">
+                    أتعهد بإرسال الشهادة فور إتمام الكورس.
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => setShowModal(false)} 
+                  disabled={!hasAgreed}
+                  className={`btn-primary w-full max-w-sm text-lg py-3.5 shadow-lg transition-all duration-300 ${!hasAgreed ? 'opacity-50 cursor-not-allowed grayscale' : 'shadow-red-500/20 hover:-translate-y-1'}`}
+                >
+                  I Understand / أوافق
                 </button>
               </motion.div>
             </motion.div>

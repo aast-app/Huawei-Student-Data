@@ -12,7 +12,7 @@ const Footer = () => {
       {/* Left: Logos */}
       <div className="flex items-center gap-4 lg:gap-6 ml-2">
         <img src="/aast-logo.png" alt="AAST" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100" />
-        <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[2]" />
+        <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[1.2]" />
       </div>
 
       {/* Middle: Copyright */}

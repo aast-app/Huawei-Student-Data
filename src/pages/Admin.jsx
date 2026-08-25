@@ -180,7 +180,8 @@ function Admin() {
                   { value: '', label: 'All Branches' },
                   { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
-                  { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' }
+                  { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
+                  { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' }
                 ]}
               />
             </div>

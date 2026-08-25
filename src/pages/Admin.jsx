@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import NetworkBackground from '../components/NetworkBackground';
 import CustomSelect from '../components/CustomSelect';
 import Loader from '../components/Loader';
 
 function Admin() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -126,21 +128,21 @@ function Admin() {
           {/* Header */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 gap-6 border-b border-gray-200 pb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">Admin Dashboard</h1>
-              <p className="text-gray-500 font-medium">Showing page {page} of {totalPages} <span className="text-[#3b82f6] font-bold">({totalStudents} total students)</span></p>
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">{t('admin_title')}</h1>
+              <p className="text-gray-500 font-medium">{t('showing_page')} {page} {t('of')} {totalPages} <span className="text-[#3b82f6] font-bold">{t('total_students', { total: totalStudents })}</span></p>
             </div>
             <div className="flex flex-wrap gap-4 w-full lg:w-auto">
               <button 
                 onClick={handleExportCSV}
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-[#10b981] hover:bg-[#059669] text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
               >
-                <Download size={20} /> Export CSV
+                <Download size={20} /> {t('export_csv')}
               </button>
               <button 
                 onClick={() => { sessionStorage.removeItem('adminPassword'); navigate('/'); }}
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-gray-900 hover:bg-black text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
               >
-                <LogOut size={20} /> Logout
+                <LogOut size={20} /> {t('logout')}
               </button>
             </div>
           </div>
@@ -152,13 +154,13 @@ function Admin() {
               <div className="input-group">
                 <input 
                   type="text" 
-                  className="input !pl-12" 
+                  className="input !ps-12" 
                   required
                   value={searchId}
                   onChange={(e) => { setSearchId(e.target.value); setPage(1); }}
                 />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
-                <label className="user-label !left-12">Search Huawei ID</label>
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
+                <label className="user-label !start-12">{t('search_id')}</label>
               </div>
             </div>
 
@@ -166,23 +168,23 @@ function Admin() {
               <div className="input-group">
                 <input 
                   type="text" 
-                  className="input !pl-12" 
+                  className="input !ps-12" 
                   required
                   value={searchName}
                   onChange={(e) => { setSearchName(e.target.value); setPage(1); }}
                 />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
-                <label className="user-label !left-12">Search Name</label>
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
+                <label className="user-label !start-12">{t('search_name')}</label>
               </div>
             </div>
 
             <div className="w-full md:w-64">
               <CustomSelect 
-                label="Branch Filter"
+                label={t('branch')}
                 value={filterBranch}
                 onChange={(val) => { setFilterBranch(val); setPage(1); }}
                 options={[
-                  { value: '', label: 'All Branches' },
+                  { value: '', label: t('all_branches') },
                   { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
@@ -196,7 +198,7 @@ function Admin() {
               className="w-full md:w-auto flex justify-center items-center gap-2 bg-gray-50 hover:bg-[#3b82f6] text-gray-600 hover:text-white font-bold py-[0.85rem] px-6 rounded-[1rem] border border-gray-200 hover:border-[#3b82f6] transition-colors duration-300"
             >
               <ArrowUpDown size={18} />
-              {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+              {sortOrder === 'desc' ? t('sort_newest') : t('sort_oldest')}
             </button>
           </div>
 
@@ -207,12 +209,12 @@ function Admin() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50/50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Huawei ID</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Branch</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Registered</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_name')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_id')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_email')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_phone')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_branch')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_date')}</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100 relative">
@@ -224,7 +226,7 @@ function Admin() {
                     </tr>
                   ) : students.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500 font-medium">No students found matching your filters.</td>
+                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500 font-medium">{t('no_students')}</td>
                     </tr>
                   ) : (
                     students.map((student) => (
@@ -241,7 +243,7 @@ function Admin() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
-                          {new Date(student.createdAt).toLocaleDateString()} <span className="text-gray-400 ml-1">{new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          {new Date(student.createdAt).toLocaleDateString()} <span className="text-gray-400 ms-1">{new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                         </td>
                       </tr>
                     ))
@@ -255,7 +257,7 @@ function Admin() {
               {loading ? (
                 <div className="py-20 flex justify-center"><Loader /></div>
               ) : students.length === 0 ? (
-                <div className="px-6 py-12 text-center text-gray-500 font-medium">No students found matching your filters.</div>
+                <div className="px-6 py-12 text-center text-gray-500 font-medium">{t('no_students')}</div>
               ) : (
                 students.map((student) => (
                   <div key={student._id} className="p-5 hover:bg-gray-50 transition-colors flex flex-col gap-3">
@@ -270,19 +272,19 @@ function Admin() {
                     
                     <div className="flex flex-col gap-1.5 mt-1">
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">ID:</span>
+                        <span className="text-gray-400 w-16 shrink-0">{t('table_id')}:</span>
                         <span className="font-mono text-[#e61d2b] font-bold truncate">{student.huaweiId}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">Email:</span>
+                        <span className="text-gray-400 w-16 shrink-0">{t('table_email')}:</span>
                         <span className="text-gray-700 font-medium break-all">{student.email}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">Phone:</span>
+                        <span className="text-gray-400 w-16 shrink-0">{t('table_phone')}:</span>
                         <span className="text-gray-700 font-medium">{student.phoneNumber}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[0.7rem] mt-2 text-gray-400 font-medium">
-                        <span>Registered: {new Date(student.createdAt).toLocaleDateString()} at {new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span>{t('table_date')}: {new Date(student.createdAt).toLocaleDateString()} {new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                       </div>
                     </div>
                   </div>
@@ -301,7 +303,7 @@ function Admin() {
                   <ChevronLeft size={18} /> Previous Page
                 </button>
                 <span className="text-sm font-semibold text-gray-600 bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-200">
-                  Page {page} of {totalPages}
+                  {t('showing_page')} {page} {t('of')} {totalPages}
                 </span>
                 <button 
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}

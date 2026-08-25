@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ShieldAlert, ExternalLink, Lock, Brain, Database, Cloud, Server, Radio, Network, ShieldCheck, Key, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkBackground from '../components/NetworkBackground';
+import { useTranslation } from 'react-i18next';
 
 const BRANCH_CLASSES = {
   'AASTMT-ALex': [
@@ -47,6 +48,7 @@ const BRANCH_CLASSES = {
 };
 
 function Classes() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const branch = searchParams.get('branch');
@@ -96,7 +98,7 @@ function Classes() {
                 </div>
                 <h3 className="mb-5 text-[#e61d2b] text-2xl font-black tracking-tight">Important Notice</h3>
                 
-                <div dir="rtl" className="text-right w-full px-2 md:px-6 mb-6">
+                <div dir="rtl" className="text-end w-full px-2 md:px-6 mb-6">
                   <p className="text-gray-800 font-bold text-base md:text-lg mb-5 leading-relaxed text-center">
                     📜 يرجى إرسال شهادة إتمام الكورس إلينا، حيث سيتم الاعتماد عليها في متابعة واستكمال ملفكم التدريبي.
                   </p>
@@ -105,7 +107,7 @@ function Classes() {
                     <p className="text-blue-900 font-bold mb-4 text-sm md:text-base border-b border-blue-200/60 pb-3">
                       ✨ إتمام الكورس وإرسال الشهادة يتيح لكم فرصة الاستفادة من العديد من المزايا:
                     </p>
-                    <ul className="space-y-3 text-gray-700 font-medium text-sm md:text-base pr-2">
+                    <ul className="space-y-3 text-gray-700 font-medium text-sm md:text-base pe-2">
                       <li className="flex items-start gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0 shadow-sm"></div>
                         <span>🎓 الأولوية في منح تدريبية مجانية أخرى من هواوي</span>
@@ -178,15 +180,15 @@ function Classes() {
             <div>
               {studentName && (
                 <p className="text-gray-600 font-bold tracking-wide uppercase text-xs sm:text-sm mb-2 md:mb-3">
-                  Welcome Back, <span className="text-[#e61d2b] font-black tracking-wider text-base sm:text-lg md:text-xl inline-block ml-1">{studentName}</span>
+                  {t('welcome_back')}, <span className="text-[#e61d2b] font-black tracking-wider text-base sm:text-lg md:text-xl inline-block ms-1">{studentName}</span>
                 </p>
               )}
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">Available Classes</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">{t('available_classes')}</h1>
             </div>
             <div className="shrink-0 mt-2 md:mt-0">
               <span className="inline-flex items-center gap-2 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#1d4ed8] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide">
                 <div className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse"></div>
-                {branch} Branch
+                {t('branch_label', { branch })}
               </span>
             </div>
           </header>
@@ -214,11 +216,11 @@ function Classes() {
                       rel="noopener noreferrer"
                       className="mt-auto flex items-center justify-center gap-2 w-full bg-[#111827] hover:bg-[#3b82f6] text-white font-bold py-3.5 px-4 rounded-xl transition-colors duration-300 shadow-md text-base"
                     >
-                      Launch Course <ExternalLink size={18} strokeWidth={2.5} />
+                      {t('launch_course')} <ExternalLink size={18} strokeWidth={2.5} />
                     </a>
                   ) : (
                     <div className="mt-auto flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-400 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-base">
-                      <Lock size={18} strokeWidth={2.5} /> Locked
+                      <Lock size={18} strokeWidth={2.5} /> {t('locked')}
                     </div>
                   )}
                 </div>

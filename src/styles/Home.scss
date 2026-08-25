@@ -1,0 +1,11 @@
+.form-container {
+  @apply bg-white p-8 w-full;
+
+  h2 {
+    @apply text-4xl font-black text-gray-900 mb-2 tracking-tight;
+  }
+  
+  p.subtitle {
+    @apply text-gray-500 mb-10 font-medium text-lg;
+  }
+}

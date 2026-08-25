@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { z } from 'zod';
-import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { X, Lock, Search, LogIn, Eye, EyeOff, ShieldAlert, ShieldCheck, UserCheck, GraduationCap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import NetworkBackground from '../components/NetworkBackground';
+import CustomSelect from '../components/CustomSelect';
+import Loader from '../components/Loader';
+import idImage from '../assets/id.png';
+import '../styles/Home.scss';
 
 // Zod Validation Schema
 const registrationSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  huaweiId: z.string().min(3, 'Huawei ID must be at least 3 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  phoneNumber: z.string().regex(/^\+?[0-9]{10,15}$/, 'Please enter a valid mobile number (10-15 digits)'),
-  branch: z.enum(['AASTMT-ALex', 'AASTMT-Miami'], {
-    errorMap: () => ({ message: 'Please select a valid branch' }),
-  }),
+  huaweiId: z.string().min(3, "Huawei ID is required"),
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Invalid email format"),
+  phoneNumber: z.string().min(10, "Valid phone number required"),
+  branch: z.string().min(1, "Please select a valid branch")
 });
 
 // Adapter for Formik to use Zod safely
@@ -27,7 +31,6 @@ const validateWithZod = (values) => {
   const errors = {};
   if (result.error && result.error.issues) {
     result.error.issues.forEach((err) => {
-      // Only keep the first error message for each field
       if (!errors[err.path[0]]) {
         errors[err.path[0]] = err.message;
       }
@@ -38,14 +41,14 @@ const validateWithZod = (values) => {
 
 function Home() {
   const navigate = useNavigate();
-  
-  // Modal states
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showStudentModal, setShowStudentModal] = useState(false);
-  
-  // Login input states
+  const [showIdHelpModal, setShowIdHelpModal] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [studentHuaweiId, setStudentHuaweiId] = useState('');
+  
+  const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
+  const [isLoadingStudent, setIsLoadingStudent] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -56,30 +59,42 @@ function Home() {
       branch: '',
     },
     validate: validateWithZod,
-    validateOnChange: false,
     validateOnBlur: true,
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: async (values, { setSubmitting, setFieldError }) => {
       try {
         const response = await axios.post('/api/students/register', values);
         sessionStorage.setItem('studentName', response.data.student.name);
-        toast.success('Registration successful!');
+        toast.success('Access Granted!');
         navigate(`/classes?branch=${values.branch}`);
       } catch (error) {
-        toast.error(error.response?.data?.message || 'Something went wrong');
+        const msg = error.response?.data?.message || 'Something went wrong';
+        // Map server errors directly to inline fields
+        if (msg.toLowerCase().includes('huawei id')) {
+          setFieldError('huaweiId', msg);
+        } else if (msg.toLowerCase().includes('email')) {
+          setFieldError('email', msg);
+        } else {
+          toast.error(msg);
+        }
       } finally {
         setSubmitting(false);
       }
     },
   });
 
-  const submitAdminLogin = (e) => {
+  const submitAdminLogin = async (e) => {
     e.preventDefault();
+    setIsLoadingAdmin(true);
+    // Add artificial delay for graceful UX since admin login is synchronous
+    await new Promise(r => setTimeout(r, 600));
+
     if (adminPassword === 'admin1234') {
       sessionStorage.setItem('adminPassword', adminPassword);
       navigate('/admin');
     } else {
       toast.error('Incorrect password');
       setAdminPassword('');
+      setIsLoadingAdmin(false);
     }
   };
 
@@ -87,185 +102,329 @@ function Home() {
     e.preventDefault();
     if (!studentHuaweiId) return;
     
+    setIsLoadingStudent(true);
     try {
       const response = await axios.post('/api/students/login', { huaweiId: studentHuaweiId });
       sessionStorage.setItem('studentName', response.data.name);
       toast.success(`Welcome back, ${response.data.name}!`);
-      // Automatically route them to their specific branch's classes page
       navigate(`/classes?branch=${response.data.branch}`);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Huawei ID not found. Please register.');
+      setIsLoadingStudent(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 relative p-4">
+    <div className="flex h-screen bg-white overflow-hidden">
       
-      {/* Admin Login Modal */}
-      {showAdminModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 transition-opacity">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-2xl relative">
-            <button 
-              onClick={() => setShowAdminModal(false)} 
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition"
-            >
-              <X size={20} />
-            </button>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Admin Access</h2>
-            <form onSubmit={submitAdminLogin}>
-              <input 
-                type="password" 
-                value={adminPassword} 
-                onChange={(e) => setAdminPassword(e.target.value)} 
-                className="w-full border border-gray-300 p-3 rounded-md mb-4 focus:border-gray-800 focus:ring-gray-800 shadow-sm" 
-                placeholder="Enter admin password" 
-                autoFocus 
-              />
-              <button 
-                type="submit" 
-                className="w-full bg-gray-800 text-white font-bold py-2 px-4 rounded-md hover:bg-gray-900 transition shadow-sm"
-              >
-                Login
-              </button>
-            </form>
-          </div>
+      {/* LEFT PANEL - Animated Tech Background */}
+      <div className="hidden lg:flex w-1/2 h-full relative overflow-hidden flex-col justify-center items-start p-12 xl:p-16 z-10 shadow-2xl shrink-0">
+        <NetworkBackground />
+        <div className="relative z-20 max-w-lg xl:ml-8">
+          <h1 className="text-5xl xl:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight drop-shadow-lg">
+            Access Your <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-400">ICT Courses</span>
+          </h1>
+          <p className="text-lg xl:text-xl text-blue-100 font-light tracking-wide opacity-90 leading-relaxed drop-shadow-md">
+            Join the official AAST-Huawei Academy gateway. Provide your details securely to unlock your dedicated branch materials and learning modules.
+          </p>
         </div>
-      )}
-
-      {/* Student Login Modal */}
-      {showStudentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 transition-opacity">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-2xl relative">
-            <button 
-              onClick={() => setShowStudentModal(false)} 
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition"
-            >
-              <X size={20} />
-            </button>
-            <h2 className="text-xl font-bold text-blue-600 mb-4">Student Login</h2>
-            <form onSubmit={submitStudentLogin}>
-              <input 
-                type="text" 
-                value={studentHuaweiId} 
-                onChange={(e) => setStudentHuaweiId(e.target.value)} 
-                className="w-full border border-gray-300 p-3 rounded-md mb-4 focus:border-blue-500 focus:ring-blue-500 shadow-sm" 
-                placeholder="Enter Huawei ID (e.g. HW-12345)" 
-                autoFocus 
-              />
-              <button 
-                type="submit" 
-                className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition shadow-sm"
-              >
-                Access Classes
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Header Buttons */}
-      <div className="absolute top-4 right-4 flex gap-4">
-        <button 
-          onClick={() => { setShowStudentModal(true); setStudentHuaweiId(''); }}
-          className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-md text-sm font-bold shadow-sm transition"
-        >
-          Student Login
-        </button>
-        <button 
-          onClick={() => { setShowAdminModal(true); setAdminPassword(''); }}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium shadow-sm transition"
-        >
-          Admin Login
-        </button>
       </div>
 
-      {/* Main Registration Form */}
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl mt-12">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Huawei Registration</h1>
+      {/* RIGHT PANEL - Form & Content */}
+      <div className="w-full lg:w-1/2 h-full flex flex-col relative bg-white">
         
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name *</label>
-            <input 
-              type="text" 
-              name="name" 
-              value={formik.values.name} 
-              onChange={formik.handleChange} 
-              onBlur={formik.handleBlur}
-              required
-              className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formik.errors.name && formik.touched.name ? 'border-red-500' : 'border-gray-300'}`} 
-              placeholder="John Doe" 
-            />
-            {formik.errors.name && formik.touched.name && <p className="text-red-500 text-xs mt-1">{formik.errors.name}</p>}
-          </div>
+        {/* DYNAMIC HEIGHT FORM CONTAINER - ZERO SCROLLBARS (UNLESS NEEDED) */}
+        <div className="flex-grow w-full overflow-y-auto flex flex-col items-center justify-center px-6 lg:px-10">
+          <div className="w-full max-w-xl form-container flex flex-col justify-center my-auto py-[2vh]">
+            
+            {/* CENTERED LOGOS */}
+            <div className="w-full flex justify-center items-center gap-[4vw] lg:gap-[6vw] mb-[4vh] overflow-visible">
+              <img src="/aast-logo.png" alt="AAST Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md transition-all duration-300" />
+              <div className="h-[12vh] min-h-[4rem] max-h-[100px] w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
+              <img src="/huawei-logo.png" alt="Huawei Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.2] lg:scale-[1.35] transform origin-center transition-all duration-300" />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Huawei ID *</label>
-            <input 
-              type="text" 
-              name="huaweiId" 
-              value={formik.values.huaweiId} 
-              onChange={formik.handleChange} 
-              onBlur={formik.handleBlur}
-              className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formik.errors.huaweiId && formik.touched.huaweiId ? 'border-red-500' : 'border-gray-300'}`} 
-              placeholder="HW-123456" 
-            />
-            {formik.errors.huaweiId && formik.touched.huaweiId && <p className="text-red-500 text-xs mt-1">{formik.errors.huaweiId}</p>}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email Address *</label>
-            <input 
-              type="email" 
-              name="email" 
-              value={formik.values.email} 
-              onChange={formik.handleChange} 
-              onBlur={formik.handleBlur}
-              className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formik.errors.email && formik.touched.email ? 'border-red-500' : 'border-gray-300'}`} 
-              placeholder="john@example.com" 
-            />
-            {formik.errors.email && formik.touched.email && <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>}
-          </div>
+            <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-[0.5vh] tracking-tight text-center lg:text-left transition-all duration-300">Student Details</h2>
+            <p className="subtitle text-sm lg:text-base mb-[3vh] text-center lg:text-left transition-all duration-300">Please enter your information to gain access</p>
+            
+            <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-[2vh]">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[1.5vh] lg:gap-[2vh]">
+                <div className="w-full flex flex-col pt-[1.75rem]">
+                  <div className="input-group">
+                    <input 
+                      type="text" 
+                      name="name" 
+                      className={`input ${formik.values.name ? 'has-value' : ''} ${formik.errors.name && formik.touched.name ? 'has-error' : ''}`}
+                      required
+                      autoComplete="off"
+                      {...formik.getFieldProps('name')}
+                    />
+                    <label className="user-label">Full Name</label>
+                  </div>
+                  {formik.errors.name && formik.touched.name && <div className="error-text">{formik.errors.name}</div>}
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Phone Number *</label>
-            <input 
-              type="tel" 
-              name="phoneNumber" 
-              value={formik.values.phoneNumber} 
-              onChange={formik.handleChange} 
-              onBlur={formik.handleBlur}
-              className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formik.errors.phoneNumber && formik.touched.phoneNumber ? 'border-red-500' : 'border-gray-300'}`} 
-              placeholder="01000000000" 
-            />
-            {formik.errors.phoneNumber && formik.touched.phoneNumber && <p className="text-red-500 text-xs mt-1">{formik.errors.phoneNumber}</p>}
-          </div>
+                <div className="w-full flex flex-col relative pt-[1.75rem]">
+                  <button 
+                    type="button"
+                    onClick={() => setShowIdHelpModal(true)}
+                    className="absolute top-1 right-2 text-[0.75rem] text-[#3b82f6] hover:text-[#1d4ed8] hover:underline font-semibold transition-colors z-10"
+                  >
+                    (How to get your Huawei ID)
+                  </button>
+                  <div className="input-group">
+                    <input 
+                      type="text" 
+                      name="huaweiId" 
+                      className={`input font-mono ${formik.values.huaweiId ? 'has-value' : ''} ${formik.errors.huaweiId && formik.touched.huaweiId ? 'has-error' : ''}`}
+                      required
+                      autoComplete="off"
+                      {...formik.getFieldProps('huaweiId')}
+                    />
+                    <label className="user-label">Huawei ID</label>
+                  </div>
+                  {formik.errors.huaweiId && formik.touched.huaweiId && <div className="error-text">{formik.errors.huaweiId}</div>}
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Branch *</label>
-            <select 
-              name="branch" 
-              value={formik.values.branch} 
-              onChange={formik.handleChange} 
-              onBlur={formik.handleBlur}
-              className={`mt-1 block w-full rounded-md border p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${formik.errors.branch && formik.touched.branch ? 'border-red-500' : 'border-gray-300'}`}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[1.5vh] lg:gap-[2vh]">
+                <div className="w-full flex flex-col">
+                  <div className="input-group">
+                    <input 
+                      type="email" 
+                      name="email" 
+                      className={`input ${formik.values.email ? 'has-value' : ''} ${formik.errors.email && formik.touched.email ? 'has-error' : ''}`}
+                      required
+                      autoComplete="off"
+                      {...formik.getFieldProps('email')}
+                    />
+                    <label className="user-label">Email Address</label>
+                  </div>
+                  {formik.errors.email && formik.touched.email && <div className="error-text">{formik.errors.email}</div>}
+                </div>
+
+                <div className="w-full flex flex-col">
+                  <div className="input-group">
+                    <input 
+                      type="tel" 
+                      name="phoneNumber" 
+                      className={`input ${formik.values.phoneNumber ? 'has-value' : ''} ${formik.errors.phoneNumber && formik.touched.phoneNumber ? 'has-error' : ''}`}
+                      required
+                      autoComplete="off"
+                      {...formik.getFieldProps('phoneNumber')}
+                    />
+                    <label className="user-label">Phone Number</label>
+                  </div>
+                  {formik.errors.phoneNumber && formik.touched.phoneNumber && <div className="error-text">{formik.errors.phoneNumber}</div>}
+                </div>
+              </div>
+
+              <div className="w-full flex flex-col">
+                <CustomSelect
+                  label="Select Branch"
+                  value={formik.values.branch}
+                  onChange={(val) => {
+                    formik.setFieldValue('branch', val);
+                    formik.setFieldTouched('branch', true, false);
+                  }}
+                  error={formik.touched.branch && Boolean(formik.errors.branch)}
+                  options={[
+                    { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
+                    { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
+                    { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' }
+                  ]}
+                />
+                {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}
+              </div>
+
+              <div className="pt-2">
+                {formik.isSubmitting ? (
+                  <Loader small={true} />
+                ) : (
+                  <button 
+                    type="submit" 
+                    className="btn-primary"
+                  >
+                    Access Courses
+                  </button>
+                )}
+              </div>
+            </form>
+
+            <hr className="my-6 border-gray-100" />
+
+            {/* Clear Returning Student Button */}
+            <button 
+              onClick={() => setShowStudentModal(true)}
+              className="w-full border-2 border-gray-200 text-gray-700 hover:border-gray-800 hover:bg-gray-50 font-bold py-3.5 px-4 rounded-[1rem] transition-all duration-300 shadow-sm text-sm lg:text-base"
             >
-              <option value="" disabled>Select your branch</option>
-              <option value="AASTMT-ALex">AASTMT-ALex</option>
-              <option value="AASTMT-Miami">AASTMT-Miami</option>
-            </select>
-            {formik.errors.branch && formik.touched.branch && <p className="text-red-500 text-xs mt-1">{formik.errors.branch}</p>}
-          </div>
+              Returning Student Login
+            </button>
 
-          <button 
-            type="submit" 
-            disabled={formik.isSubmitting}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 transition"
-          >
-            {formik.isSubmitting ? 'Submitting...' : 'Register'}
-          </button>
-        </form>
+            {/* Subtle Admin Link */}
+            <div className="mt-6 text-center pb-4">
+              <button 
+                onClick={() => setShowAdminModal(true)} 
+                className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-4 transition-colors"
+              >
+                Staff & Admin Dashboard
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        {/* LOCAL FOOTER FOR HOME PAGE (Right Panel Only) */}
+        <div className="w-full px-6 lg:px-10 py-3 shrink-0 flex justify-between items-center border-t border-gray-100 bg-white z-20">
+          <div className="flex items-center gap-4 lg:gap-6 ml-2">
+            <img src="/aast-logo.png" alt="AAST" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100" />
+            <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[2]" />
+          </div>
+          <div className="text-[0.6rem] lg:text-[0.7rem] text-gray-400 font-medium text-center hidden sm:block">
+            &copy; {new Date().getFullYear()} AAST. Developed by Eng. Youssef Wael.
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </div>
+            <span className="text-[0.6rem] lg:text-[0.7rem] text-gray-500 font-medium">Operational</span>
+          </div>
+        </div>
+
       </div>
+
+      {/* Modals using Framer Motion for graceful animation */}
+      <AnimatePresence>
+        {showAdminModal && (
+          <motion.div 
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="modal-content form-container !p-8"
+              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <button className="close-btn" onClick={() => setShowAdminModal(false)}><X size={24} /></button>
+              <h3>Staff Authentication</h3>
+              <form onSubmit={submitAdminLogin}>
+                <div className="w-full mb-6">
+                  <div className="input-group">
+                    <input 
+                      type="password" 
+                      className="input"
+                      value={adminPassword} 
+                      onChange={(e) => setAdminPassword(e.target.value)} 
+                      autoFocus 
+                      required 
+                      autoComplete="off"
+                    />
+                    <label className="user-label">Admin Password</label>
+                  </div>
+                </div>
+                <div className="pt-2">
+                  {isLoadingAdmin ? (
+                    <Loader small={true} />
+                  ) : (
+                    <button type="submit" className="btn-primary">
+                      Login to Dashboard
+                    </button>
+                  )}
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showStudentModal && (
+          <motion.div 
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="modal-content form-container !p-8"
+              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <button className="close-btn" onClick={() => setShowStudentModal(false)}><X size={24} /></button>
+              <h3>Student Access</h3>
+              <form onSubmit={submitStudentLogin}>
+                <div className="w-full mb-6">
+                  <div className="input-group">
+                    <input 
+                      type="text" 
+                      className="input"
+                      value={studentHuaweiId} 
+                      onChange={(e) => setStudentHuaweiId(e.target.value)} 
+                      autoFocus 
+                      required 
+                      autoComplete="off"
+                    />
+                    <label className="user-label">Huawei ID</label>
+                  </div>
+                </div>
+              <div className="pt-2">
+                {isLoadingStudent ? (
+                  <Loader small={true} />
+                ) : (
+                  <button type="submit" className="btn-primary">
+                    Access My Classes
+                  </button>
+                )}
+              </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showIdHelpModal && (
+          <motion.div 
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="modal-content form-container !max-w-5xl !w-11/12 !p-6"
+              initial={{ scale: 0.9, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <button className="close-btn" onClick={() => setShowIdHelpModal(false)}><X size={24} /></button>
+              <h3 className="mb-4">How to find your Huawei ID</h3>
+              <div className="w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-50 flex justify-center p-4">
+                <img 
+                  src={idImage} 
+                  alt="How to get Huawei ID" 
+                  className="w-full h-auto object-contain max-h-[70vh] rounded-lg cursor-zoom-in" 
+                  onClick={() => window.open(idImage, '_blank')} 
+                />
+              </div>
+              <p className="text-center text-sm text-gray-500 mt-2">Click image to view full screen</p>
+              <button onClick={() => setShowIdHelpModal(false)} className="btn-primary mt-4">
+                Got it
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

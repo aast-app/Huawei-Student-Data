@@ -32,6 +32,8 @@ function Admin() {
       case 'AASTMT-Fouad': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'AASTMT-Alamein': return 'bg-rose-100 text-rose-700 border-rose-200';
       case 'AASTMT-Smart Village': return 'bg-teal-100 text-teal-700 border-teal-200';
+      case 'AASTMT-Aswan': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'AASTMT-ENG': return 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -241,7 +243,9 @@ function Admin() {
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
                   { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
                   { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
-                  { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' }
+                  { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' },
+                  { value: 'AASTMT-Aswan', label: 'AASTMT-Aswan' },
+                  { value: 'AASTMT-ENG', label: 'AASTMT-ENG' }
                 ]}
               />
             </div>

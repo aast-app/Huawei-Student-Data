@@ -245,7 +245,9 @@ function Home() {
                     { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
                     { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
                     { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
-                    { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' }
+                    { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' },
+                    { value: 'AASTMT-Aswan', label: 'AASTMT-Aswan' },
+                    { value: 'AASTMT-ENG', label: 'AASTMT-ENG' }
                   ]}
                 />
                 {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}

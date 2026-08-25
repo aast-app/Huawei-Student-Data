@@ -135,14 +135,14 @@ function Home() {
       <div className="w-full lg:w-1/2 h-full flex flex-col relative bg-white">
         
         {/* DYNAMIC HEIGHT FORM CONTAINER - ZERO SCROLLBARS (UNLESS NEEDED) */}
-        <div className="flex-grow w-full overflow-y-auto flex flex-col items-center justify-center px-6 lg:px-10">
-          <div className="w-full max-w-xl form-container flex flex-col justify-center my-auto py-[2vh]">
+        <div className="flex-grow w-full overflow-y-auto px-6 lg:px-10">
+          <div className="w-full max-w-xl mx-auto min-h-full form-container flex flex-col justify-center py-10 lg:py-[4vh]">
             
             {/* CENTERED LOGOS */}
-            <div className="w-full flex justify-center items-center gap-[4vw] lg:gap-[6vw] mb-[6vh] lg:mb-[8vh] overflow-visible">
-              <img src="/aast-logo.png" alt="AAST Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.3] lg:scale-[1.45] transform origin-center transition-all duration-300" />
-              <div className="h-[8vh] min-h-[3rem] max-h-[80px] w-[2px] bg-black opacity-30 rounded-full"></div>
-              <img src="/huawei-logo.png" alt="Huawei Logo" className="h-[12vh] min-h-[4rem] max-h-[100px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.2] lg:scale-[1.35] transform origin-center transition-all duration-300" />
+            <div className="w-full flex justify-center items-center gap-[4vw] lg:gap-[6vw] mb-[4vh] lg:mb-[8vh] overflow-visible">
+              <img src="/aast-logo.png" alt="AAST Logo" className="h-[8vh] lg:h-[12vh] min-h-[3rem] lg:min-h-[4rem] max-h-[70px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.1] lg:scale-[1.45] transform origin-center transition-all duration-300" />
+              <div className="h-[5vh] lg:h-[8vh] min-h-[2rem] lg:min-h-[3rem] max-h-[50px] lg:max-h-[80px] w-[2px] bg-black opacity-30 rounded-full"></div>
+              <img src="/huawei-logo.png" alt="Huawei Logo" className="h-[8vh] lg:h-[12vh] min-h-[3rem] lg:min-h-[4rem] max-h-[70px] lg:max-h-[130px] object-contain drop-shadow-md scale-[1.0] lg:scale-[1.35] transform origin-center transition-all duration-300" />
             </div>
 
             <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-[0.5vh] tracking-tight text-center lg:text-left transition-all duration-300">Student Details</h2>
@@ -278,7 +278,7 @@ function Home() {
         </div>
 
         {/* LOCAL FOOTER FOR HOME PAGE (Right Panel Only) */}
-        <div className="w-full px-6 lg:px-10 py-3 shrink-0 flex justify-between items-center border-t border-gray-100 bg-white z-20">
+        <div className="hidden lg:flex w-full px-6 lg:px-10 py-3 shrink-0 justify-between items-center border-t border-gray-100 bg-white z-20">
           <div className="flex items-center gap-4 lg:gap-6 ml-2">
             <img src="/aast-logo.png" alt="AAST" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100" />
             <img src="/huawei-logo.png" alt="Huawei" className="h-5 lg:h-6 object-contain opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100 scale-[1.2]" />

@@ -1,7 +1,7 @@
 import { Brain, Database, Cloud, Server, Radio, Network, ShieldCheck, Cpu } from 'lucide-react';
 
 export const BRANCH_CLASSES = {
-  'AASTMT-ALex': [
+  'AASTMT-Alex (AbuQir)': [
     { shortName: 'AI', longName: 'AI_Course_AASTMT-ALex', code: '9tWckM', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787590726165&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Big Data', longName: 'BigData_Course_AASTMT-ALex', code: 'rFlvpn', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787591685680&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Cloud Computing', longName: 'CloudComputing_Course_AASTMT-ALex', code: 'iUfson', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787591879357&courseType=ICT&urlForm=course%2Fmanagement' },
@@ -11,7 +11,16 @@ export const BRANCH_CLASSES = {
     { shortName: 'Security', longName: 'Security_Course_AASTMT-ALex', code: '5o3739', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787594258321&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'IoT', longName: 'IoT_Course_AASTMT-ALex', code: 'TBA', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787652885674&courseType=ICT&urlForm=course%2Fmanagement' },
   ],
-  'AASTMT-Miami': [],
+  'AASTMT-Miami': [
+    { shortName: 'AI', longName: 'AI_Course_AASTMT-Miami', code: '3kuAyp', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787690670105&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Big Data', longName: 'BigData_Course_AASTMT-Miami', code: 'g3wHEC', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787690915795&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Computing', longName: 'Cloud Computing_Course_AASTMT-Miami', code: 'RYikv6', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691246864&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Service', longName: 'Cloud Service_Course_AASTMT-Miami', code: 'zvHyO1', icon: Server, color: 'text-cyan-600', bg: 'bg-cyan-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691375847&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: '5G', longName: '5G_Course_AASTMT-Miami', code: 'PhDrdt', icon: Radio, color: 'text-emerald-600', bg: 'bg-emerald-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691478423&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Datacom', longName: 'Datacom_Course_AASTMT-Miami', code: 'ki8xqL', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691584880&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Security', longName: 'Security_Course_AASTMT-Miami', code: '3VQJ0v', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691679497&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'IoT', longName: 'IoT_Course_AASTMT-Miami', code: 'qPRIn0', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787691831355&courseType=ICT&urlForm=course%2Fmanagement' },
+  ],
   'AASTMT-Dokki': [
     { shortName: 'AI', longName: 'AI_COURSE_AAST-IECDokki', code: 'TBA', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787638855079&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Big Data', longName: 'BIG_DATA_AAST-IECDokki', code: 'TBA', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787639537508&courseType=ICT&urlForm=course%2Fmanagement' },
@@ -61,7 +70,7 @@ export const BRANCH_CLASSES = {
     { shortName: 'Security', longName: 'Security_Course_AASTMT-Aswan', code: 't8WHae', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787689276399&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'IoT', longName: 'IoT', code: 'YkpVrT', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787689417731&courseType=ICT&urlForm=course%2Fmanagement' },
   ],
-  'AASTMT-ENG': [
+  'AASTMT-ENG (Sheraton)': [
     { shortName: 'AI', longName: 'AI_COURSE_AASTMT-ENG', code: 'TBA', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1786547282887&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Big Data', longName: 'BigData_COURSE_AASTMT-ENG', code: 'TBA', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787578309905&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Cloud Computing', longName: 'CloudComputing_COURSE_AASTMT-ENG', code: 'TBA', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787579762584&courseType=ICT&urlForm=course%2Fmanagement' },

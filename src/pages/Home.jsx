@@ -240,14 +240,14 @@ function Home() {
                   }}
                   error={formik.touched.branch && Boolean(formik.errors.branch)}
                   options={[
-                    { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
+                    { value: 'AASTMT-Alex (AbuQir)', label: 'AASTMT-Alex (AbuQir)' },
                     { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                     { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
                     { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
                     { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
                     { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' },
                     { value: 'AASTMT-Aswan', label: 'AASTMT-Aswan' },
-                    { value: 'AASTMT-ENG', label: 'AASTMT-ENG' }
+                    { value: 'AASTMT-ENG (Sheraton)', label: 'AASTMT-ENG (Sheraton)' }
                   ]}
                 />
                 {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}

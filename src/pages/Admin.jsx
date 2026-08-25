@@ -24,16 +24,16 @@ function Admin() {
   const [filterBranch, setFilterBranch] = useState('');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  const getBranchBadgeColor = (branch) => {
-    switch (branch) {
-      case 'AASTMT-ALex': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'AASTMT-Miami': return 'bg-purple-100 text-purple-700 border-purple-200';
+  const getBranchBadgeColor = (branchName) => {
+    switch (branchName) {
+      case 'AASTMT-Alex (AbuQir)': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'AASTMT-Miami': return 'bg-cyan-100 text-cyan-700 border-cyan-200';
       case 'AASTMT-Dokki': return 'bg-amber-100 text-amber-700 border-amber-200';
       case 'AASTMT-Fouad': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'AASTMT-Alamein': return 'bg-rose-100 text-rose-700 border-rose-200';
       case 'AASTMT-Smart Village': return 'bg-teal-100 text-teal-700 border-teal-200';
       case 'AASTMT-Aswan': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'AASTMT-ENG': return 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200';
+      case 'AASTMT-ENG (Sheraton)': return 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -238,14 +238,14 @@ function Admin() {
                 onChange={(val) => { setFilterBranch(val); setPage(1); }}
                 options={[
                   { value: '', label: 'All Branches' },
-                  { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
+                  { value: 'AASTMT-Alex (AbuQir)', label: 'AASTMT-Alex (AbuQir)' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
                   { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
                   { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
                   { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' },
                   { value: 'AASTMT-Aswan', label: 'AASTMT-Aswan' },
-                  { value: 'AASTMT-ENG', label: 'AASTMT-ENG' }
+                  { value: 'AASTMT-ENG (Sheraton)', label: 'AASTMT-ENG (Sheraton)' }
                 ]}
               />
             </div>

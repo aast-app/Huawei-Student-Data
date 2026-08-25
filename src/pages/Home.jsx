@@ -46,6 +46,7 @@ function Home() {
   const [showIdHelpModal, setShowIdHelpModal] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [studentHuaweiId, setStudentHuaweiId] = useState('');
+  const [studentEmailLogin, setStudentEmailLogin] = useState('');
   
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
   const [isLoadingStudent, setIsLoadingStudent] = useState(false);
@@ -105,16 +106,19 @@ function Home() {
 
   const submitStudentLogin = async (e) => {
     e.preventDefault();
-    if (!studentHuaweiId) return;
+    if (!studentHuaweiId || !studentEmailLogin) return;
     
     setIsLoadingStudent(true);
     try {
-      const response = await axios.post('/api/students/login', { huaweiId: studentHuaweiId });
+      const response = await axios.post('/api/students/login', { 
+        huaweiId: studentHuaweiId, 
+        email: studentEmailLogin 
+      });
       sessionStorage.setItem('studentName', response.data.name);
       toast.success(`Welcome back, ${response.data.name}!`);
       navigate(`/classes?branch=${response.data.branch}`);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Huawei ID not found. Please register.');
+      toast.error(error.response?.data?.message || 'Login failed. Please check your details.');
       setIsLoadingStudent(false);
     }
   };
@@ -380,6 +384,19 @@ function Home() {
                       autoComplete="off"
                     />
                     <label className="user-label">Huawei ID</label>
+                  </div>
+                </div>
+                <div className="w-full mb-6">
+                  <div className="input-group">
+                    <input 
+                      type="email" 
+                      className="input"
+                      value={studentEmailLogin} 
+                      onChange={(e) => setStudentEmailLogin(e.target.value)} 
+                      required 
+                      autoComplete="off"
+                    />
+                    <label className="user-label">Email Address</label>
                   </div>
                 </div>
               <div className="pt-2">

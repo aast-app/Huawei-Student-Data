@@ -20,10 +20,16 @@ router.post('/register', async (req, res) => {
     await connectDB();
 
     const existingStudent = await Student.findOne({ huaweiId: normalizedId });
-
     if (existingStudent) {
       return res.status(400).json({ 
         message: 'This Huawei ID is already registered. Please use the Student Login button, or use a new ID.' 
+      });
+    }
+
+    const existingEmail = await Student.findOne({ email: normalizedEmail });
+    if (existingEmail) {
+      return res.status(400).json({ 
+        message: 'This Email is already registered. Please use the Student Login button.' 
       });
     }
 
@@ -46,21 +52,26 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { huaweiId } = req.body;
+  const { huaweiId, email } = req.body;
 
-  if (!huaweiId) {
-    return res.status(400).json({ message: 'Please provide a Huawei ID' });
+  if (!huaweiId || !email) {
+    return res.status(400).json({ message: 'Please provide both Huawei ID and Email' });
   }
 
   // Data Hygiene: trim and lowercase before searching
   const normalizedId = huaweiId.trim().toLowerCase();
+  const normalizedEmail = email.trim().toLowerCase();
 
   try {
     await connectDB();
     const student = await Student.findOne({ huaweiId: normalizedId });
 
     if (student) {
-      res.status(200).json({ branch: student.branch, name: student.name });
+      if (student.email === normalizedEmail) {
+        res.status(200).json({ branch: student.branch, name: student.name });
+      } else {
+        res.status(401).json({ message: 'The provided Email does not match this Huawei ID.' });
+      }
     } else {
       res.status(404).json({ message: 'Huawei ID not found. Please register below.' });
     }

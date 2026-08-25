@@ -27,6 +27,8 @@ const BRANCH_CLASSES = {
   'AASTMT-Dokki': [
     { shortName: 'AI', longName: 'AI_COURSE_AAST-IECDokki', code: 'TBA', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787638855079&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Big Data', longName: 'BIG_DATA_AAST-IECDokki', code: 'TBA', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787639537508&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Computing', longName: 'Cloud_Computing_COURSE_AAST-IECDokki', code: 'TBA', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787652832902&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Service', longName: 'Cloud Service_COURSE_AAST_IECDokki', code: 'TBA', icon: Server, color: 'text-cyan-600', bg: 'bg-cyan-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787653150388&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Datacom', longName: 'DATACOM_COURSE_AAST-IECDokki', code: 'TBA', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787643675067&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: '5G', longName: '5G_COURSE_AAST-IECDokki', code: 'TBA', icon: Radio, color: 'text-emerald-600', bg: 'bg-emerald-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787641471243&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Security', longName: 'SECURITY_COURSE_AAST-IECDokki', code: 'TBA', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787640234917&courseType=ICT&urlForm=course%2Fmanagement' },
@@ -175,8 +177,8 @@ function Classes() {
           <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between border-b border-gray-200 pb-6 gap-4">
             <div>
               {studentName && (
-                <p className="text-gray-500 font-bold tracking-wide uppercase text-sm mb-2">
-                  Welcome Back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#e61d2b] to-[#ff4b58] font-black tracking-wider text-base">{studentName}</span>
+                <p className="text-gray-600 font-bold tracking-wide uppercase text-xs sm:text-sm mb-2 md:mb-3">
+                  Welcome Back, <span className="text-[#e61d2b] font-black tracking-wider text-base sm:text-lg md:text-xl inline-block ml-1">{studentName}</span>
                 </p>
               )}
               <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">Available Classes</h1>

@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
     const student = await Student.findOne({ huaweiId: normalizedId });
 
     if (student) {
-      res.status(200).json({ branch: student.branch });
+      res.status(200).json({ branch: student.branch, name: student.name });
     } else {
       res.status(404).json({ message: 'Huawei ID not found. Please register below.' });
     }

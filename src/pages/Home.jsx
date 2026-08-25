@@ -60,7 +60,8 @@ function Home() {
     validateOnBlur: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await axios.post('/api/students/register', values);
+        const response = await axios.post('/api/students/register', values);
+        sessionStorage.setItem('studentName', response.data.student.name);
         toast.success('Registration successful!');
         navigate(`/classes?branch=${values.branch}`);
       } catch (error) {
@@ -88,7 +89,9 @@ function Home() {
     
     try {
       const response = await axios.post('/api/students/login', { huaweiId: studentHuaweiId });
-      toast.success('Welcome back!');
+      sessionStorage.setItem('studentName', response.data.name);
+      toast.success(`Welcome back, ${response.data.name}!`);
+      // Automatically route them to their specific branch's classes page
       navigate(`/classes?branch=${response.data.branch}`);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Huawei ID not found. Please register.');

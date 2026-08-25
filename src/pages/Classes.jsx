@@ -28,6 +28,7 @@ function Classes() {
   const navigate = useNavigate();
   const branch = searchParams.get('branch');
   const [showModal, setShowModal] = useState(true);
+  const studentName = sessionStorage.getItem('studentName');
 
   // Send back to home if they navigate here without a valid branch parameter
   useEffect(() => {
@@ -69,6 +70,9 @@ function Classes() {
       {/* Main Content */}
       <div className="max-w-5xl mx-auto">
         <header className="mb-10 text-center">
+          {studentName && (
+            <h2 className="text-2xl font-bold text-gray-500 mb-2 tracking-wide">Welcome, {studentName}!</h2>
+          )}
           <h1 className="text-4xl font-extrabold text-blue-900 tracking-tight">Huawei ICT Courses</h1>
           <p className="text-lg text-blue-800 mt-3 font-semibold bg-blue-100 inline-block px-5 py-2 rounded-full shadow-sm border border-blue-200">
             Branch: {branch}

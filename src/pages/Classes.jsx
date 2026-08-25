@@ -3,11 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ShieldAlert, ExternalLink, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NetworkBackground from '../components/NetworkBackground';
-import { useTranslation } from 'react-i18next';
 import { BRANCH_CLASSES } from '../data/courses';
 
 function Classes() {
-  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const branch = searchParams.get('branch');
@@ -139,15 +137,15 @@ function Classes() {
             <div>
               {studentName && (
                 <p className="text-gray-600 font-bold tracking-wide uppercase text-xs sm:text-sm mb-2 md:mb-3">
-                  {t('welcome_back')}, <span className="text-[#e61d2b] font-black tracking-wider text-base sm:text-lg md:text-xl inline-block ms-1">{studentName}</span>
+                  Welcome back, <span className="text-[#e61d2b] font-black tracking-wider text-base sm:text-lg md:text-xl inline-block ms-1">{studentName}</span>
                 </p>
               )}
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">{t('available_classes')}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">Available Classes</h1>
             </div>
             <div className="shrink-0 mt-2 md:mt-0">
               <span className="inline-flex items-center gap-2 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#1d4ed8] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide">
                 <div className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse"></div>
-                {t('branch_label', { branch })}
+                {branch} Branch
               </span>
             </div>
           </header>
@@ -175,11 +173,11 @@ function Classes() {
                       rel="noopener noreferrer"
                       className="mt-auto flex items-center justify-center gap-2 w-full bg-[#111827] hover:bg-[#3b82f6] text-white font-bold py-3.5 px-4 rounded-xl transition-colors duration-300 shadow-md text-base"
                     >
-                      {t('launch_course')} <ExternalLink size={18} strokeWidth={2.5} />
+                      Launch Course <ExternalLink size={18} strokeWidth={2.5} />
                     </a>
                   ) : (
                     <div className="mt-auto flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-400 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-base">
-                      <Lock size={18} strokeWidth={2.5} /> {t('locked')}
+                      <Lock size={18} strokeWidth={2.5} /> Locked
                     </div>
                   )}
                 </div>

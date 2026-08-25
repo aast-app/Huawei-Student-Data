@@ -6,7 +6,6 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { X, Lock, Search, LogIn, Eye, EyeOff, ShieldAlert, ShieldCheck, UserCheck, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import NetworkBackground from '../components/NetworkBackground';
 import CustomSelect from '../components/CustomSelect';
 import Loader from '../components/Loader';
@@ -41,7 +40,6 @@ const validateWithZod = (values) => {
 };
 
 function Home() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showStudentModal, setShowStudentModal] = useState(false);
@@ -67,7 +65,7 @@ function Home() {
       try {
         const response = await axios.post('/api/students/register', values);
         sessionStorage.setItem('studentName', response.data.student.name);
-        toast.success(t('access_granted'));
+        toast.success('Access Granted');
         navigate(`/classes?branch=${values.branch}`);
       } catch (error) {
         const msg = error.response?.data?.message || 'Something went wrong';
@@ -117,7 +115,7 @@ function Home() {
         email: studentEmailLogin 
       });
       sessionStorage.setItem('studentName', response.data.name);
-      toast.success(`${t('welcome_back')}, ${response.data.name}!`);
+      toast.success(`Welcome Back, ${response.data.name}!`);
       navigate(`/classes?branch=${response.data.branch}`);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed. Please check your details.');
@@ -133,11 +131,11 @@ function Home() {
         <NetworkBackground />
         <div className="relative z-20 max-w-lg xl:ms-8">
           <h1 className="text-5xl xl:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight drop-shadow-lg">
-            {t('access_courses')} <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-400">{t('ict_courses')}</span>
+            Access Courses <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-400">ICT Courses</span>
           </h1>
           <p className="text-lg xl:text-xl text-blue-100 font-light tracking-wide opacity-90 leading-relaxed drop-shadow-md">
-            {t('home_subtitle')}
+            Explore our comprehensive ICT courses to boost your career
           </p>
         </div>
       </div>
@@ -172,7 +170,7 @@ function Home() {
                       autoComplete="off"
                       {...formik.getFieldProps('name')}
                     />
-                    <label className="user-label">{t('name')}</label>
+                    <label className="user-label">Full Name / الاسم الكامل</label>
                   </div>
                   {formik.errors.name && formik.touched.name && <div className="error-text">{formik.errors.name}</div>}
                 </div>
@@ -181,9 +179,9 @@ function Home() {
                   <button 
                     type="button"
                     onClick={() => setShowIdHelpModal(true)}
-                    className="absolute top-1 end-2 text-[0.75rem] text-[#3b82f6] hover:text-[#1d4ed8] hover:underline font-semibold transition-colors z-10"
+                    className="absolute top-1 end-2 text-[0.75rem] text-[#3b82f6] hover:text-[#1d4ed8] hover:underline font-semibold transition-colors z-10 whitespace-nowrap"
                   >
-                    ({t('how_to_find_id')})
+                    (How to find Huawei ID / كيفية العثور على رقم هواوي)
                   </button>
                   <div className="input-group">
                     <input 
@@ -194,7 +192,7 @@ function Home() {
                       autoComplete="off"
                       {...formik.getFieldProps('huaweiId')}
                     />
-                    <label className="user-label">{t('huawei_id')}</label>
+                    <label className="user-label">Huawei ID / رقم هواوي</label>
                   </div>
                   {formik.errors.huaweiId && formik.touched.huaweiId && <div className="error-text">{formik.errors.huaweiId}</div>}
                 </div>
@@ -211,7 +209,7 @@ function Home() {
                       autoComplete="off"
                       {...formik.getFieldProps('email')}
                     />
-                    <label className="user-label">{t('email')}</label>
+                    <label className="user-label">Email / البريد الاكتروني</label>
                   </div>
                   {formik.errors.email && formik.touched.email && <div className="error-text">{formik.errors.email}</div>}
                 </div>
@@ -226,7 +224,7 @@ function Home() {
                       autoComplete="off"
                       {...formik.getFieldProps('phoneNumber')}
                     />
-                    <label className="user-label">{t('phone')}</label>
+                    <label className="user-label">Phone Number / رقم الهاتف</label>
                   </div>
                   {formik.errors.phoneNumber && formik.touched.phoneNumber && <div className="error-text">{formik.errors.phoneNumber}</div>}
                 </div>
@@ -234,7 +232,7 @@ function Home() {
 
               <div className="w-full flex flex-col">
                 <CustomSelect
-                  label={t('select_branch')}
+                  label="Select Branch / اختر الفرع"
                   value={formik.values.branch}
                   onChange={(val) => {
                     formik.setFieldValue('branch', val);
@@ -261,7 +259,7 @@ function Home() {
                     type="submit" 
                     className="btn-primary"
                   >
-                    {t('register')}
+                    Register / تسجيل
                   </button>
                 )}
               </div>
@@ -274,7 +272,7 @@ function Home() {
               onClick={() => setShowStudentModal(true)}
               className="w-full border-2 border-gray-200 text-gray-700 hover:border-gray-800 hover:bg-gray-50 font-bold py-3.5 px-4 rounded-[1rem] transition-all duration-300 shadow-sm text-sm lg:text-base"
             >
-              {t('login_student')}
+              Login as Student / تسجيل دخول كطالب
             </button>
 
             {/* Subtle Admin Link */}
@@ -283,7 +281,7 @@ function Home() {
                 onClick={() => setShowAdminModal(true)} 
                 className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-4 transition-colors"
               >
-                {t('admin_access')}
+                Admin Access
               </button>
             </div>
 
@@ -327,7 +325,7 @@ function Home() {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
               <button className="close-btn" onClick={() => setShowAdminModal(false)}><X size={24} /></button>
-              <h3>{t('admin_login')}</h3>
+              <h3>Admin Login</h3>
               <form onSubmit={submitAdminLogin}>
                 <div className="w-full mb-6">
                   <div className="input-group">
@@ -340,7 +338,7 @@ function Home() {
                       required 
                       autoComplete="off"
                     />
-                    <label className="user-label">{t('admin_password')}</label>
+                    <label className="user-label">Admin Password</label>
                   </div>
                 </div>
                 <div className="pt-2">
@@ -348,7 +346,7 @@ function Home() {
                     <Loader small={true} />
                   ) : (
                     <button type="submit" className="btn-primary">
-                      {t('enter_dashboard')}
+                      Enter Dashboard
                     </button>
                   )}
                 </div>
@@ -374,7 +372,7 @@ function Home() {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
               <button className="close-btn" onClick={() => setShowStudentModal(false)}><X size={24} /></button>
-              <h3>{t('student_access')}</h3>
+              <h3>Student Access / دخول الطالب</h3>
               <form onSubmit={submitStudentLogin}>
                 <div className="w-full mb-6">
                   <div className="input-group">
@@ -387,7 +385,7 @@ function Home() {
                       required 
                       autoComplete="off"
                     />
-                    <label className="user-label">{t('huawei_id')}</label>
+                    <label className="user-label">Huawei ID / رقم هواوي</label>
                   </div>
                 </div>
                 <div className="w-full mb-6">
@@ -400,7 +398,7 @@ function Home() {
                       required 
                       autoComplete="off"
                     />
-                    <label className="user-label">{t('email')}</label>
+                    <label className="user-label">Email / البريد الاكتروني</label>
                   </div>
                 </div>
               <div className="pt-2">
@@ -408,7 +406,7 @@ function Home() {
                   <Loader small={true} />
                 ) : (
                   <button type="submit" className="btn-primary">
-                    {t('access_my_classes')}
+                    Access My Classes / عرض الكورسات
                   </button>
                 )}
               </div>
@@ -434,18 +432,18 @@ function Home() {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
               <button className="close-btn" onClick={() => setShowIdHelpModal(false)}><X size={24} /></button>
-              <h3 className="mb-4">{t('id_help_title')}</h3>
+              <h3 className="mb-4">How to find your Huawei ID</h3>
               <div className="w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-50 flex justify-center p-4">
                 <img 
                   src={idImage} 
-                  alt={t('id_help_title')} 
+                  alt="How to find your Huawei ID" 
                   className="w-full h-auto object-contain max-h-[70vh] rounded-lg cursor-zoom-in" 
                   onClick={() => window.open(idImage, '_blank')} 
                 />
               </div>
-              <p className="text-center text-sm text-gray-500 mt-2">{t('click_image')}</p>
+              <p className="text-center text-sm text-gray-500 mt-2">Click image to enlarge</p>
               <button onClick={() => setShowIdHelpModal(false)} className="btn-primary mt-4">
-                {t('got_it')}
+                Got it
               </button>
             </motion.div>
           </motion.div>

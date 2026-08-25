@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database, Users, BookOpen, ExternalLink, Key } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { BRANCH_CLASSES } from '../data/courses';
 import NetworkBackground from '../components/NetworkBackground';
@@ -12,7 +11,6 @@ import Loader from '../components/Loader';
 
 function Admin() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('users');
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -143,21 +141,21 @@ function Admin() {
           {/* Header */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 gap-6 border-b border-gray-200 pb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">{t('admin_title')}</h1>
-              <p className="text-gray-500 font-medium">{t('showing_page')} {page} {t('of')} {totalPages} <span className="text-[#3b82f6] font-bold">{t('total_students', { total: totalStudents })}</span></p>
+              <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">Admin Dashboard</h1>
+              <p className="text-gray-500 font-medium">Showing page {page} of {totalPages} <span className="text-[#3b82f6] font-bold">({totalStudents} total students)</span></p>
             </div>
             <div className="flex flex-wrap gap-4 w-full lg:w-auto">
               <button 
                 onClick={handleExportCSV}
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-[#10b981] hover:bg-[#059669] text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
               >
-                <Download size={20} /> {t('export_csv')}
+                <Download size={20} /> Export CSV
               </button>
               <button 
                 onClick={() => { sessionStorage.removeItem('adminPassword'); navigate('/'); }}
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-gray-900 hover:bg-black text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
               >
-                <LogOut size={20} /> {t('logout')}
+                <LogOut size={20} /> Logout
               </button>
             </div>
           </div>
@@ -178,7 +176,7 @@ function Admin() {
                 />
               )}
               <Users size={18} />
-              {t('tab_users')}
+              Users
             </button>
             <button
               onClick={() => setActiveTab('classes')}
@@ -194,7 +192,7 @@ function Admin() {
                 />
               )}
               <BookOpen size={18} />
-              {t('tab_classes')}
+              Classes
             </button>
           </div>
 
@@ -213,7 +211,7 @@ function Admin() {
                   onChange={(e) => { setSearchId(e.target.value); setPage(1); }}
                 />
                 <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
-                <label className="user-label !start-12">{t('search_id')}</label>
+                <label className="user-label !start-12">Search by ID...</label>
               </div>
             </div>
 
@@ -227,17 +225,17 @@ function Admin() {
                   onChange={(e) => { setSearchName(e.target.value); setPage(1); }}
                 />
                 <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
-                <label className="user-label !start-12">{t('search_name')}</label>
+                <label className="user-label !start-12">Search by Name...</label>
               </div>
             </div>
 
             <div className="w-full md:w-64">
               <CustomSelect 
-                label={t('branch')}
+                label="Branch"
                 value={filterBranch}
                 onChange={(val) => { setFilterBranch(val); setPage(1); }}
                 options={[
-                  { value: '', label: t('table_branch') + ' (All)' },
+                  { value: '', label: 'All Branches' },
                   { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
@@ -253,7 +251,7 @@ function Admin() {
               className="w-full md:w-auto flex justify-center items-center gap-2 bg-gray-50 hover:bg-[#3b82f6] text-gray-600 hover:text-white font-bold py-[0.85rem] px-6 rounded-[1rem] border border-gray-200 hover:border-[#3b82f6] transition-colors duration-300"
             >
               <ArrowUpDown size={18} />
-              {sortOrder === 'desc' ? t('sort_newest') : t('sort_oldest')}
+              {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
             </button>
           </div>
 
@@ -264,12 +262,12 @@ function Admin() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50/50">
                   <tr>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_name')}</th>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_id')}</th>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_email')}</th>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_phone')}</th>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_branch')}</th>
-                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{t('table_date')}</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">NAME</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">HUAWEI ID</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">EMAIL</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">PHONE</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">BRANCH</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">REGISTRATION DATE</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100 relative">
@@ -281,7 +279,7 @@ function Admin() {
                     </tr>
                   ) : students.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500 font-medium">{t('no_students')}</td>
+                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500 font-medium">No students found matching your criteria.</td>
                     </tr>
                   ) : (
                     students.map((student) => (
@@ -310,7 +308,7 @@ function Admin() {
               {loading ? (
                 <div className="py-20 flex justify-center"><Loader /></div>
               ) : students.length === 0 ? (
-                <div className="px-6 py-12 text-center text-gray-500 font-medium">{t('no_students')}</div>
+                <div className="px-6 py-12 text-center text-gray-500 font-medium">No students found matching your criteria.</div>
               ) : (
                 students.map((student) => (
                   <div key={student._id} className="p-5 hover:bg-gray-50 transition-colors flex flex-col gap-3">
@@ -323,19 +321,19 @@ function Admin() {
                     
                     <div className="flex flex-col gap-1.5 mt-1">
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">{t('table_id')}:</span>
+                        <span className="text-gray-400 w-16 shrink-0">HUAWEI ID:</span>
                         <span className="font-mono text-[#e61d2b] font-bold truncate">{student.huaweiId}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">{t('table_email')}:</span>
+                        <span className="text-gray-400 w-16 shrink-0">EMAIL:</span>
                         <span className="text-gray-700 font-medium break-all">{student.email}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-gray-400 w-16 shrink-0">{t('table_phone')}:</span>
+                        <span className="text-gray-400 w-16 shrink-0">PHONE:</span>
                         <span className="text-gray-700 font-medium">{student.phoneNumber}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[0.7rem] mt-2 text-gray-400 font-medium">
-                        <span>{t('table_date')}: {new Date(student.createdAt).toLocaleDateString()} {new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span>REGISTRATION DATE: {new Date(student.createdAt).toLocaleDateString()} {new Date(student.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                       </div>
                     </div>
                   </div>
@@ -354,7 +352,7 @@ function Admin() {
                   <ChevronLeft size={18} /> Previous Page
                 </button>
                 <span className="text-sm font-semibold text-gray-600 bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-200">
-                  {t('showing_page')} {page} {t('of')} {totalPages}
+                  Showing page {page} of {totalPages}
                 </span>
                 <button 
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}

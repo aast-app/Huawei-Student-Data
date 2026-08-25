@@ -63,14 +63,15 @@ function Classes() {
   const classesList = BRANCH_CLASSES[branch];
 
   return (
-    <div className="relative min-h-screen w-full bg-[#0f172a] flex items-center justify-center py-12 px-4 sm:px-8">
+    <div className="relative h-screen w-full overflow-y-auto overflow-x-hidden bg-[#0f172a]">
       {/* Background layer */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <NetworkBackground />
       </div>
 
       {/* Main Content Layer */}
-      <div className="relative z-10 w-full max-w-[90rem]">
+      <div className="relative z-10 w-full min-h-full flex flex-col items-center justify-start lg:justify-center py-[6vh] lg:py-12 px-4 sm:px-8 mx-auto">
+        <div className="w-full max-w-[90rem]">
         
         {/* Important Notification Modal */}
         <AnimatePresence>
@@ -132,7 +133,7 @@ function Classes() {
                     <p className="text-gray-600 text-sm font-bold mb-2">
                       يرجى إرسال الشهادة فور إتمامكم الكورس على البريد التالي:
                     </p>
-                    <a href="mailto:iasc.huawei@aast.edu" dir="ltr" className="text-[#3b82f6] hover:text-blue-700 hover:underline font-black text-xl inline-block transition-colors tracking-wide">
+                    <a href="mailto:iasc.huawei@aast.edu" dir="ltr" className="text-[#3b82f6] hover:text-blue-700 hover:underline font-black text-lg md:text-xl inline-block transition-colors tracking-wide break-all">
                       iasc.huawei@aast.edu
                     </a>
                   </div>
@@ -223,6 +224,7 @@ function Classes() {
             })}
           </div>
 
+          </div>
         </div>
       </div>
     </div>

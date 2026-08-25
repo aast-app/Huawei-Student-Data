@@ -7,7 +7,6 @@ import Home from './pages/Home.jsx';
 import Classes from './pages/Classes.jsx';
 import Admin from './pages/Admin.jsx';
 import Footer from './components/Footer';
-import LanguageToggle from './components/LanguageToggle';
 
 const PageWrapper = ({ children }) => (
   <motion.div
@@ -43,7 +42,6 @@ const AppRoutes = () => {
 
   return (
     <div className="w-full h-screen overflow-hidden relative">
-      <LanguageToggle onToggle={handleLanguageToggle} targetLang={targetLang} />
       <Toaster position="top-center" />
       <AnimatePresence mode="wait" onExitComplete={handleExitComplete}>
         <Routes location={location} key={`${location.pathname}-${targetLang}`}>

@@ -245,7 +245,8 @@ function Home() {
                     { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                     { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                     { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
-                    { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' }
+                    { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
+                    { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' }
                   ]}
                 />
                 {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}

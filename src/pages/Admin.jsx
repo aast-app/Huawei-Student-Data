@@ -188,7 +188,8 @@ function Admin() {
                   { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
-                  { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' }
+                  { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
+                  { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' }
                 ]}
               />
             </div>

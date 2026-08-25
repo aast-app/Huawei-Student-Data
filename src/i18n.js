@@ -58,7 +58,9 @@ const resources = {
       table_phone: "Phone",
       table_branch: "Branch",
       table_date: "Registration Date",
-      no_students: "No students found matching your criteria."
+      no_students: "No students found matching your criteria.",
+      tab_users: "Users",
+      tab_classes: "Classes"
     }
   },
   ar: {
@@ -116,7 +118,9 @@ const resources = {
       table_phone: "رقم الهاتف",
       table_branch: "الفرع",
       table_date: "تاريخ التسجيل",
-      no_students: "لا يوجد طلاب مطابقين لبحثك."
+      no_students: "لا يوجد طلاب مطابقين لبحثك.",
+      tab_users: "المستخدمين",
+      tab_classes: "الكورسات"
     }
   }
 };

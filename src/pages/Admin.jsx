@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database } from 'lucide-react';
+import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database, Users, BookOpen, ExternalLink, Key } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { BRANCH_CLASSES } from '../data/courses';
 import NetworkBackground from '../components/NetworkBackground';
 import CustomSelect from '../components/CustomSelect';
 import Loader from '../components/Loader';
@@ -11,6 +13,7 @@ import Loader from '../components/Loader';
 function Admin() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('users');
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -30,6 +33,7 @@ function Admin() {
       case 'AASTMT-Dokki': return 'bg-amber-100 text-amber-700 border-amber-200';
       case 'AASTMT-Fouad': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'AASTMT-Alamein': return 'bg-rose-100 text-rose-700 border-rose-200';
+      case 'AASTMT-Smart Village': return 'bg-teal-100 text-teal-700 border-teal-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -158,7 +162,45 @@ function Admin() {
             </div>
           </div>
 
-          {/* Filters Toolbar */}
+          {/* Tabs UI */}
+          <div className="flex gap-2 mb-8 bg-gray-100/50 p-1.5 rounded-2xl w-fit">
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`relative flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-colors z-10 ${
+                activeTab === 'users' ? 'text-[#3b82f6]' : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              {activeTab === 'users' && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className="absolute inset-0 bg-white rounded-xl shadow-sm border border-gray-200/50 z-[-1]"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <Users size={18} />
+              {t('tab_users')}
+            </button>
+            <button
+              onClick={() => setActiveTab('classes')}
+              className={`relative flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-colors z-10 ${
+                activeTab === 'classes' ? 'text-[#3b82f6]' : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              {activeTab === 'classes' && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className="absolute inset-0 bg-white rounded-xl shadow-sm border border-gray-200/50 z-[-1]"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <BookOpen size={18} />
+              {t('tab_classes')}
+            </button>
+          </div>
+
+          {activeTab === 'users' && (
+            <div className="space-y-8">
+              {/* Filters Toolbar */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-6 items-center">
             
             <div className="w-full md:flex-1">
@@ -195,12 +237,13 @@ function Admin() {
                 value={filterBranch}
                 onChange={(val) => { setFilterBranch(val); setPage(1); }}
                 options={[
-                  { value: '', label: t('all_branches') },
+                  { value: '', label: t('table_branch') + ' (All)' },
                   { value: 'AASTMT-ALex', label: 'AASTMT-ALex' },
                   { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
                   { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
                   { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
-                  { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' }
+                  { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
+                  { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' }
                 ]}
               />
             </div>
@@ -323,6 +366,46 @@ function Admin() {
               </div>
             )}
           </div>
+          </div>
+          )}
+
+          {activeTab === 'classes' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {Object.entries(BRANCH_CLASSES).map(([branchName, courses]) => (
+                <div key={branchName} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                    <h3 className="text-lg font-black text-gray-900">{branchName}</h3>
+                  </div>
+                  <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {courses.map((course, idx) => (
+                      <div key={idx} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className={`p-3 rounded-xl ${course.bg} ${course.color}`}>
+                            <course.icon size={24} />
+                          </div>
+                          {course.url && (
+                            <a 
+                              href={course.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 text-gray-400 hover:text-[#3b82f6] bg-white rounded-lg shadow-sm border border-gray-100 transition-colors"
+                            >
+                              <ExternalLink size={16} />
+                            </a>
+                          )}
+                        </div>
+                        <h4 className="font-bold text-gray-900 mb-1">{course.shortName}</h4>
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium mt-auto pt-2">
+                          <Key size={14} className="text-gray-400" />
+                          {course.code || 'N/A'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
         </div>
       </div>

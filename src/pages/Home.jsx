@@ -85,13 +85,18 @@ function Home() {
   const submitAdminLogin = async (e) => {
     e.preventDefault();
     setIsLoadingAdmin(true);
-    // Add artificial delay for graceful UX since admin login is synchronous
-    await new Promise(r => setTimeout(r, 600));
 
-    if (adminPassword === 'admin1234') {
+    try {
+      // Securely verify the password by pinging the backend API
+      await axios.get('/api/students', {
+        headers: { 'x-admin-password': adminPassword },
+        params: { limit: 1 }
+      });
+      
+      // If the backend doesn't throw a 401 Error, the password is correct!
       sessionStorage.setItem('adminPassword', adminPassword);
       navigate('/admin');
-    } else {
+    } catch (error) {
       toast.error('Incorrect password');
       setAdminPassword('');
       setIsLoadingAdmin(false);

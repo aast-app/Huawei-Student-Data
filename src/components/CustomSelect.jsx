@@ -76,7 +76,7 @@ const CustomSelect = ({ options, value, onChange, label, className = '', error =
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-2xl z-[100] overflow-hidden py-1.5"
+            className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-2xl z-[100] max-h-60 overflow-y-auto py-1.5"
           >
             {options.map((option) => (
               <div 

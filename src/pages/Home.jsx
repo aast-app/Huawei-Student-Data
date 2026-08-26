@@ -14,8 +14,8 @@ import '../styles/Home.scss';
 
 // Zod Validation Schema
 const registrationSchema = z.object({
-  huaweiId: z.string().min(3, "Huawei ID is required"),
-  name: z.string().min(2, "Name is required"),
+  huaweiId: z.string().min(3, "Huawei ID is required").regex(/^[a-zA-Z0-9_.-]+$/, "Please use English characters only"),
+  name: z.string().min(2, "Name is required").regex(/^[a-zA-Z\s.'-]+$/, "Please use English characters only"),
   email: z.string().email("Invalid email format"),
   phoneNumber: z.string().min(10, "Valid phone number required"),
   branch: z.string().min(1, "Please select a valid branch")

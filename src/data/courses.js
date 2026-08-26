@@ -79,5 +79,14 @@ export const BRANCH_CLASSES = {
     { shortName: 'Datacom', longName: 'Datacom_COURSE_AASTMT-ENG', code: 'TBA', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787687499193&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Security', longName: 'Security_COURSE_AASTMT-ENG', code: 'TBA', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787687923411&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'IoT', longName: 'IoT_COURSE_AASTMT-ENG', code: 'TBA', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787689129722&courseType=ICT&urlForm=course%2Fmanagement' },
+  ],
+  'AAST-PORTSAID': [
+    { shortName: 'AI', longName: 'AI-Course AASTMT-PORTSAID', code: 'KbTMh9', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787722909092&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Big Data', longName: 'BigData-Course-AASTMT-PORTSAID', code: 'uX6q7x', icon: Database, color: 'text-blue-600', bg: 'bg-blue-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787723204472&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Computing', longName: 'CloudComputing-Course-AASTMT-PORTSAID', code: 'xu2QMR', icon: Cloud, color: 'text-sky-600', bg: 'bg-sky-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787724846911&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Cloud Service', longName: 'CloudService-Course-AASTMT-PORTSAID', code: 'R8CoBq', icon: Server, color: 'text-cyan-600', bg: 'bg-cyan-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787725006459&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: '5G', longName: '5G-COURSE-AASTMT-PORTSAID', code: 'vKKB28', icon: Radio, color: 'text-emerald-600', bg: 'bg-emerald-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787723377643&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Datacom', longName: 'Datacom-Course-AASTMT-PORTSAID', code: '1rffIs', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787723526775&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Security', longName: 'Security-Course-AASTMT-PORTSAID', code: 'sutHyI', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787725164894&courseType=ICT&urlForm=course%2Fmanagement' },
   ]
 };

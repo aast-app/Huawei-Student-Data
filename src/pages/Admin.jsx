@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database, Users, BookOpen, ExternalLink, Key } from 'lucide-react';
+import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database, Users, BookOpen, ExternalLink, Key, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { BRANCH_CLASSES } from '../data/courses';
@@ -23,6 +23,56 @@ function Admin() {
   const [searchName, setSearchName] = useState('');
   const [filterBranch, setFilterBranch] = useState('');
   const [sortOrder, setSortOrder] = useState('desc');
+
+  // Delete User Modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteSearchQuery, setDeleteSearchQuery] = useState('');
+  const [deleteSearchResults, setDeleteSearchResults] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (deleteSearchQuery.length >= 3) {
+      const delayDebounceFn = setTimeout(() => {
+        searchForDelete(deleteSearchQuery);
+      }, 500);
+      return () => clearTimeout(delayDebounceFn);
+    } else {
+      setDeleteSearchResults([]);
+    }
+  }, [deleteSearchQuery]);
+
+  const searchForDelete = async (query) => {
+    try {
+      const password = sessionStorage.getItem('adminPassword');
+      const [resId, resName] = await Promise.all([
+        axios.get(`/api/students?searchId=${query}&limit=5`, { headers: { 'x-admin-password': password } }),
+        axios.get(`/api/students?searchName=${query}&limit=5`, { headers: { 'x-admin-password': password } })
+      ]);
+      const combined = [...resId.data.students, ...resName.data.students];
+      const unique = Array.from(new Map(combined.map(item => [item._id, item])).values());
+      setDeleteSearchResults(unique);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this user? This cannot be undone.")) return;
+    try {
+      setIsDeleting(true);
+      const password = sessionStorage.getItem('adminPassword');
+      await axios.delete(`/api/students/${id}`, {
+        headers: { 'x-admin-password': password }
+      });
+      toast.success("User deleted successfully");
+      setDeleteSearchResults(prev => prev.filter(u => u._id !== id));
+      fetchStudents();
+    } catch (err) {
+      toast.error("Failed to delete user");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const getBranchBadgeColor = (branchName) => {
     switch (branchName) {
@@ -148,6 +198,12 @@ function Admin() {
               <p className="text-gray-500 font-medium">Showing page {page} of {totalPages} <span className="text-[#3b82f6] font-bold">({totalStudents} total students)</span></p>
             </div>
             <div className="flex flex-wrap gap-4 w-full lg:w-auto">
+              <button 
+                onClick={() => setShowDeleteModal(true)}
+                className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
+              >
+                <Trash2 size={20} /> Delete User
+              </button>
               <button 
                 onClick={handleExportCSV}
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-[#10b981] hover:bg-[#059669] text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
@@ -410,9 +466,68 @@ function Admin() {
               ))}
             </div>
           )}
-
         </div>
       </div>
+
+      {/* Delete User Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+          >
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Trash2 className="text-red-500" /> Delete User
+              </h2>
+              <button onClick={() => setShowDeleteModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 flex-1 overflow-y-auto">
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-gray-700 mb-2">Search User by ID or Name</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <input
+                    type="text"
+                    placeholder="Type at least 3 characters..."
+                    value={deleteSearchQuery}
+                    onChange={(e) => setDeleteSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {deleteSearchResults.length > 0 ? (
+                <div className="space-y-3">
+                  {deleteSearchResults.map(user => (
+                    <div key={user._id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-100 rounded-xl hover:bg-red-50/50 transition-colors gap-4">
+                      <div>
+                        <div className="font-bold text-gray-900">{user.name}</div>
+                        <div className="text-sm text-gray-500">{user.huaweiId} • {user.branch}</div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        disabled={isDeleting}
+                        className="w-full sm:w-auto px-4 py-2 bg-red-100 text-red-700 hover:bg-red-600 hover:text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                      >
+                        Delete Permanently
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : deleteSearchQuery.length >= 3 ? (
+                <div className="text-center py-8 text-gray-500">No users found matching "{deleteSearchQuery}"</div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">Start typing to search for a user</div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

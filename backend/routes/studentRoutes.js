@@ -94,10 +94,11 @@ router.get('/', async (req, res) => {
     }
 
     // Build Query
-    const { searchId, searchName, branch, sortOrder = 'desc' } = req.query;
+    const { searchId, searchName, searchEmail, branch, sortOrder = 'desc' } = req.query;
     const query = {};
     if (searchId) query.huaweiId = { $regex: searchId.trim(), $options: 'i' };
     if (searchName) query.name = { $regex: searchName.trim(), $options: 'i' };
+    if (searchEmail) query.email = { $regex: searchEmail.trim(), $options: 'i' };
     if (branch && branch !== 'All Branches') query.branch = branch;
 
     const sort = { createdAt: sortOrder === 'asc' ? 1 : -1 };
@@ -129,6 +130,29 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Server error fetching data' });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const password = req.headers['x-admin-password'];
+  
+  try {
+    await connectDB();
+    
+    const settings = await Setting.findOne();
+    if (!settings || password !== settings.adminPassword) {
+      return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
+    }
+
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json({ message: 'Student deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).json({ message: 'Server error deleting student' });
   }
 });
 

@@ -44,11 +44,12 @@ function Admin() {
   const searchForDelete = async (query) => {
     try {
       const password = sessionStorage.getItem('adminPassword');
-      const [resId, resName] = await Promise.all([
+      const [resId, resName, resEmail] = await Promise.all([
         axios.get(`/api/students?searchId=${query}&limit=5`, { headers: { 'x-admin-password': password } }),
-        axios.get(`/api/students?searchName=${query}&limit=5`, { headers: { 'x-admin-password': password } })
+        axios.get(`/api/students?searchName=${query}&limit=5`, { headers: { 'x-admin-password': password } }),
+        axios.get(`/api/students?searchEmail=${query}&limit=5`, { headers: { 'x-admin-password': password } })
       ]);
-      const combined = [...resId.data.students, ...resName.data.students];
+      const combined = [...resId.data.students, ...resName.data.students, ...resEmail.data.students];
       const unique = Array.from(new Map(combined.map(item => [item._id, item])).values());
       setDeleteSearchResults(unique);
     } catch (err) {
@@ -488,7 +489,7 @@ function Admin() {
             
             <div className="p-6 flex-1 overflow-y-auto">
               <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Search User by ID or Name</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Search User by ID, Name, or Email</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input

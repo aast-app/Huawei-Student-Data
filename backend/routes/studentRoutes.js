@@ -128,6 +128,36 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/backup', async (req, res) => {
+  const password = req.headers['x-admin-password'];
+  
+  try {
+    await connectDB();
+    
+    // Verify Password from MongoDB
+    const settings = await Setting.findOne();
+    if (!settings || password !== settings.adminPassword) {
+      return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
+    }
+
+    // Fetch all collections data
+    const students = await Student.find({});
+    
+    const backupData = {
+      timestamp: new Date().toISOString(),
+      collections: {
+        students: students,
+        settings: settings
+      }
+    };
+
+    res.status(200).json(backupData);
+  } catch (error) {
+    console.error('Error creating backup:', error);
+    res.status(500).json({ message: 'Server error creating backup' });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   const password = req.headers['x-admin-password'];
   

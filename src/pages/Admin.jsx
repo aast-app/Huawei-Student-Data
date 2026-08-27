@@ -176,6 +176,34 @@ function Admin() {
     }
   };
 
+  const handleBackupDB = async () => {
+    const adminPassword = sessionStorage.getItem('adminPassword');
+    const toastId = toast.loading('Creating Backup...');
+    try {
+      const response = await axios.get('/api/students/backup', {
+        headers: { 'x-admin-password': adminPassword }
+      });
+      
+      const backupData = JSON.stringify(response.data, null, 2);
+      const blob = new Blob([backupData], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = url;
+      const dateString = new Date().toISOString().split('T')[0];
+      link.download = `mongodb_backup_${dateString}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success('Database Backup Downloaded!', { id: toastId });
+    } catch (error) {
+      toast.error('Failed to create backup', { id: toastId });
+      console.error(error);
+    }
+  };
+
   const toggleSort = () => {
     setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc');
     setPage(1);
@@ -204,6 +232,12 @@ function Admin() {
                 className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
               >
                 <Trash2 size={20} /> Delete User
+              </button>
+              <button 
+                onClick={handleBackupDB}
+                className="flex-1 lg:flex-none flex justify-center items-center gap-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold py-3 px-6 rounded-[1rem] shadow-md transition-all duration-300 transform hover:scale-[1.02]"
+              >
+                <Database size={20} /> Backup DB
               </button>
               <button 
                 onClick={handleExportCSV}

@@ -52,28 +52,23 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { phoneNumber, email } = req.body;
+  const { email } = req.body;
 
-  if (!phoneNumber || !email) {
-    return res.status(400).json({ message: 'Please provide both Phone Number and Email' });
+  if (!email) {
+    return res.status(400).json({ message: 'Please provide your Email' });
   }
 
   // Data Hygiene: trim and lowercase before searching
-  const normalizedPhone = phoneNumber.trim();
   const normalizedEmail = email.trim().toLowerCase();
 
   try {
     await connectDB();
-    const student = await Student.findOne({ phoneNumber: normalizedPhone });
+    const student = await Student.findOne({ email: normalizedEmail });
 
     if (student) {
-      if (student.email === normalizedEmail) {
-        res.status(200).json({ branch: student.branch, name: student.name });
-      } else {
-        res.status(401).json({ message: 'The provided Email does not match this Phone Number.' });
-      }
+      res.status(200).json({ branch: student.branch, name: student.name });
     } else {
-      res.status(404).json({ message: 'Phone Number not found. Please register below.' });
+      res.status(404).json({ message: 'Email not found. Please register below.' });
     }
   } catch (error) {
     console.error('Error logging in student:', error);

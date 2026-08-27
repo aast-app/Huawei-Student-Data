@@ -45,7 +45,7 @@ function Home() {
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [showIdHelpModal, setShowIdHelpModal] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
-  const [studentPhoneNumber, setStudentPhoneNumber] = useState('');
+
   const [studentEmailLogin, setStudentEmailLogin] = useState('');
   
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
@@ -106,12 +106,11 @@ function Home() {
 
   const submitStudentLogin = async (e) => {
     e.preventDefault();
-    if (!studentPhoneNumber || !studentEmailLogin) return;
+    if (!studentEmailLogin) return;
     
     setIsLoadingStudent(true);
     try {
       const response = await axios.post('/api/students/login', { 
-        phoneNumber: studentPhoneNumber, 
         email: studentEmailLogin 
       });
       sessionStorage.setItem('studentName', response.data.name);
@@ -377,31 +376,19 @@ function Home() {
               <button className="close-btn" onClick={() => setShowStudentModal(false)}><X size={24} /></button>
               <h3>Student Access / دخول الطالب</h3>
               <form onSubmit={submitStudentLogin}>
-                <div className="w-full mb-6">
-                  <div className="input-group">
-                    <input 
-                      type="text" 
-                      className="input"
-                      value={studentPhoneNumber} 
-                      onChange={(e) => setStudentPhoneNumber(e.target.value)} 
-                      autoFocus 
-                      required 
-                      autoComplete="off"
-                    />
-                    <label className="user-label">Phone Number / رقم الهاتف</label>
-                  </div>
-                </div>
+
                 <div className="w-full mb-6">
                   <div className="input-group">
                     <input 
                       type="email" 
                       className="input"
                       value={studentEmailLogin} 
-                      onChange={(e) => setStudentEmailLogin(e.target.value)} 
+                      onChange={(e) => setStudentEmailLogin(e.target.value)}
+                      autoFocus 
                       required 
                       autoComplete="off"
                     />
-                    <label className="user-label">Email / البريد الاكتروني</label>
+                    <label className="user-label">Email / البريد الإلكتروني</label>
                   </div>
                 </div>
               <div className="pt-2">

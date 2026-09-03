@@ -503,7 +503,9 @@ function Admin() {
           {activeTab === 'classes' && (
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <h2 className="text-xl font-bold text-gray-900">Manage Course Links</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Manage Course Links <span className="text-gray-400 font-medium mx-1">for</span> <span className="text-blue-600 font-black">{selectedClassesBranch}</span>
+                </h2>
                 <div className="w-full sm:w-72">
                   <CustomSelect 
                     label="Select Branch"
@@ -589,7 +591,10 @@ function Admin() {
                           />
                         ) : null}
                         
-                        <h4 className="text-xl font-black text-gray-900 mt-auto">{course.shortName}</h4>
+                        <div className="mt-auto">
+                          <h4 className="text-xl font-black text-gray-900">{course.shortName}</h4>
+                          <p className="text-[10px] sm:text-xs font-bold text-gray-400 mt-1 uppercase tracking-wider">{course.code}</p>
+                        </div>
                       </div>
                     )})}
                   </div>

@@ -153,7 +153,7 @@ function Classes() {
         </AnimatePresence>
 
         {/* Main Dashboard Card */}
-        <div className="glass-panel p-6 lg:p-8 xl:p-10 w-full">
+        <div className="glass-panel p-6 lg:p-8 xl:p-10 w-full mb-12">
           
           <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between border-b border-gray-200 pb-6 gap-4">
             <div>

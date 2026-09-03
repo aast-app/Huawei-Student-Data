@@ -30,15 +30,18 @@ function Admin() {
   const [deleteSearchQuery, setDeleteSearchQuery] = useState('');
   const [deleteSearchResults, setDeleteSearchResults] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSearchingDelete, setIsSearchingDelete] = useState(false);
 
   useEffect(() => {
     if (deleteSearchQuery.length >= 3) {
+      setIsSearchingDelete(true);
       const delayDebounceFn = setTimeout(() => {
         searchForDelete(deleteSearchQuery);
       }, 500);
       return () => clearTimeout(delayDebounceFn);
     } else {
       setDeleteSearchResults([]);
+      setIsSearchingDelete(false);
     }
   }, [deleteSearchQuery]);
 
@@ -55,6 +58,8 @@ function Admin() {
       setDeleteSearchResults(unique);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsSearchingDelete(false);
     }
   };
 
@@ -637,7 +642,11 @@ function Admin() {
                 </div>
               </div>
 
-              {deleteSearchResults.length > 0 ? (
+              {isSearchingDelete ? (
+                <div className="flex justify-center items-center py-12">
+                  <Loader />
+                </div>
+              ) : deleteSearchResults.length > 0 ? (
                 <div className="space-y-3">
                   {deleteSearchResults.map(user => (
                     <div key={user._id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-100 rounded-xl hover:bg-red-50/50 transition-colors gap-4">

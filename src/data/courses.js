@@ -1,4 +1,4 @@
-import { Brain, Database, Cloud, Server, Radio, Network, ShieldCheck, Cpu } from 'lucide-react';
+import { Brain, Database, Cloud, Server, Radio, Network, ShieldCheck, Cpu, Monitor } from 'lucide-react';
 
 export const BRANCH_CLASSES = {
   'AASTMT-Alex (AbuQir)': [
@@ -10,6 +10,7 @@ export const BRANCH_CLASSES = {
     { shortName: 'Datacom', longName: 'Datacom_Course_AASTMT-ALex', code: 'FXTH30', icon: Network, color: 'text-orange-600', bg: 'bg-orange-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787594071855&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'Security', longName: 'Security_Course_AASTMT-ALex', code: '5o3739', icon: ShieldCheck, color: 'text-red-600', bg: 'bg-red-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787594258321&courseType=ICT&urlForm=course%2Fmanagement' },
     { shortName: 'IoT', longName: 'IoT_Course_AASTMT-ALex', code: 'TBA', icon: Cpu, color: 'text-violet-600', bg: 'bg-violet-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787652885674&courseType=ICT&urlForm=course%2Fmanagement' },
+    { shortName: 'Computing', longName: 'Computing_Course_AASTMT-ALex', code: 'TBA', icon: Monitor, color: 'text-fuchsia-600', bg: 'bg-fuchsia-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1788427572789&courseType=ICT&urlForm=course%2Fmanagement' },
   ],
   'AASTMT-Miami': [
     { shortName: 'AI', longName: 'AI_Course_AASTMT-Miami', code: '3kuAyp', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-50', url: 'https://e.huawei.com/en/talent/#/course/course-details?applicationId=1787690670105&courseType=ICT&urlForm=course%2Fmanagement' },

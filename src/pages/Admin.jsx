@@ -92,6 +92,7 @@ function Admin() {
   };
 
   const [branchesData, setBranchesData] = useState([]);
+  const [selectedClassesBranch, setSelectedClassesBranch] = useState('');
   const [editingLink, setEditingLink] = useState(null);
   const [newUrl, setNewUrl] = useState('');
 
@@ -115,6 +116,9 @@ function Admin() {
     try {
       const response = await axios.get('/api/students/branches');
       setBranchesData(response.data);
+      if (response.data.length > 0) {
+        setSelectedClassesBranch(response.data[0].name);
+      }
     } catch (err) {
       console.error('Failed to fetch branches:', err);
     }
@@ -497,13 +501,23 @@ function Admin() {
           )}
 
           {activeTab === 'classes' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {branchesData.map((branch) => (
-                <div key={branch.name} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-                    <h3 className="text-lg font-black text-gray-900">{branch.name}</h3>
-                  </div>
-                  <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <h2 className="text-xl font-bold text-gray-900">Manage Course Links</h2>
+                <div className="w-full sm:w-72">
+                  <CustomSelect 
+                    label="Select Branch"
+                    value={selectedClassesBranch}
+                    onChange={(val) => setSelectedClassesBranch(val)}
+                    options={branchesData.map(b => ({ value: b.name, label: b.name }))}
+                  />
+                </div>
+              </div>
+
+              {selectedClassesBranch && branchesData.find(b => b.name === selectedClassesBranch) && (() => {
+                const branch = branchesData.find(b => b.name === selectedClassesBranch);
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {branch.courses.map((course) => {
                       const Icon = LucideIcons[course.icon] || LucideIcons.BookOpen;
                       const currentUrl = course.url;
@@ -513,10 +527,10 @@ function Admin() {
                       const ringColor = course.bg.replace('bg-', 'ring-').replace('50', '200');
 
                       return (
-                      <div key={course._id} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
-                        <div className="flex justify-between items-start mb-4">
-                          <div className={`p-3 rounded-xl ${enhancedBg} ${course.color} ring-1 ring-inset ${ringColor}`}>
-                            <Icon size={24} />
+                      <div key={course._id} className="flex flex-col p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 min-h-[14rem]">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className={`p-4 rounded-xl ${enhancedBg} ${course.color} ring-1 ring-inset ${ringColor}`}>
+                            <Icon size={28} />
                           </div>
                           <div className="flex gap-2">
                             {isEditing ? (
@@ -541,7 +555,7 @@ function Admin() {
                                     setEditingLink({ branchName: branch.name, shortName: course.shortName });
                                     setNewUrl(currentUrl || '');
                                   }}
-                                  className="p-2 text-gray-500 hover:text-blue-500 bg-white rounded-lg shadow-sm border border-gray-100 transition-colors text-xs font-bold"
+                                  className="px-3 py-2 text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors text-xs font-bold"
                                 >
                                   Edit Link
                                 </button>
@@ -550,12 +564,12 @@ function Admin() {
                                     href={currentUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 text-gray-400 hover:text-[#3b82f6] bg-white rounded-lg shadow-sm border border-gray-100 transition-colors"
+                                    className="p-2 text-gray-400 hover:text-[#3b82f6] bg-gray-50 hover:bg-blue-50 rounded-lg border border-gray-200 transition-colors"
                                   >
                                     <ExternalLink size={16} />
                                   </a>
                                 ) : (
-                                  <div className="p-2 text-gray-300 bg-gray-100 rounded-lg shadow-sm border border-gray-200 cursor-not-allowed opacity-60" title="Link not available">
+                                  <div className="p-2 text-gray-300 bg-gray-50 rounded-lg border border-gray-200 cursor-not-allowed opacity-60" title="Link not available">
                                     <ExternalLink size={16} />
                                   </div>
                                 )}
@@ -570,17 +584,17 @@ function Admin() {
                             value={newUrl}
                             onChange={(e) => setNewUrl(e.target.value)}
                             placeholder="Enter course URL..."
-                            className="w-full text-sm p-2 border border-gray-300 rounded mb-2"
+                            className="w-full text-sm p-3 border border-gray-300 rounded-xl mb-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             autoFocus
                           />
                         ) : null}
                         
-                        <h4 className="font-bold text-gray-900 mt-auto">{course.shortName}</h4>
+                        <h4 className="text-xl font-black text-gray-900 mt-auto">{course.shortName}</h4>
                       </div>
                     )})}
                   </div>
-                </div>
-              ))}
+                );
+              })()}
             </div>
           )}
         </div>

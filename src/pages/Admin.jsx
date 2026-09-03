@@ -509,10 +509,13 @@ function Admin() {
                       const currentUrl = course.url;
                       const isEditing = editingLink?.branchName === branch.name && editingLink?.shortName === course.shortName;
 
+                      const enhancedBg = course.bg.replace('50', '100');
+                      const ringColor = course.bg.replace('bg-', 'ring-').replace('50', '200');
+
                       return (
                       <div key={course._id} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
                         <div className="flex justify-between items-start mb-4">
-                          <div className={`p-3 rounded-xl ${course.bg} ${course.color}`}>
+                          <div className={`p-3 rounded-xl ${enhancedBg} ${course.color} ring-1 ring-inset ${ringColor}`}>
                             <Icon size={24} />
                           </div>
                           <div className="flex gap-2">

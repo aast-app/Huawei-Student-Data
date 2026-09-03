@@ -174,14 +174,17 @@ function Classes() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {classesList.map((course, idx) => {
-              const Icon = LucideIcons[course.icon] || LucideIcons.BookOpen;
-              const currentUrl = course.url;
+                      const Icon = LucideIcons[course.icon] || LucideIcons.BookOpen;
+                      const currentUrl = course.url;
+                      
+                      const enhancedBg = course.bg.replace('50', '100');
+                      const ringColor = course.bg.replace('bg-', 'ring-').replace('50', '200');
 
-              return (
-                <div key={idx} className="bg-white rounded-2xl p-6 lg:p-7 min-h-[14rem] shadow-md border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">
-                  
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className={`p-3 lg:p-4 rounded-xl ${course.bg} ${course.color} shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                      return (
+                        <div key={idx} className="bg-white rounded-2xl p-6 lg:p-7 min-h-[14rem] shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">
+                          
+                          <div className="flex items-start gap-4 mb-6">
+                            <div className={`p-4 rounded-xl ${enhancedBg} ${course.color} ring-1 ring-inset ${ringColor} shadow-md group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                       <Icon size={28} strokeWidth={2.5} />
                     </div>
                     <div className="flex-1 min-w-0">

@@ -478,7 +478,7 @@ function Admin() {
                           <div className={`p-3 rounded-xl ${course.bg} ${course.color}`}>
                             <course.icon size={24} />
                           </div>
-                          {course.url && (
+                          {course.url ? (
                             <a 
                               href={course.url}
                               target="_blank"
@@ -487,13 +487,13 @@ function Admin() {
                             >
                               <ExternalLink size={16} />
                             </a>
+                          ) : (
+                            <div className="p-2 text-gray-300 bg-gray-100 rounded-lg shadow-sm border border-gray-200 cursor-not-allowed opacity-60" title="Link not available">
+                              <ExternalLink size={16} />
+                            </div>
                           )}
                         </div>
-                        <h4 className="font-bold text-gray-900 mb-1">{course.shortName}</h4>
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium mt-auto pt-2">
-                          <Key size={14} className="text-gray-400" />
-                          {course.code || 'N/A'}
-                        </div>
+                        <h4 className="font-bold text-gray-900 mt-auto">{course.shortName}</h4>
                       </div>
                     ))}
                   </div>

@@ -4,11 +4,6 @@ const settingSchema = new mongoose.Schema({
   adminPassword: {
     type: String,
     required: true,
-  },
-  courseLinks: {
-    type: Map,
-    of: String,
-    default: {}
   }
 }, {
   timestamps: true,

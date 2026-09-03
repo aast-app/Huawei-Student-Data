@@ -1,6 +1,7 @@
 import express from 'express';
 import Student from '../models/Student.js';
 import Setting from '../models/Setting.js';
+import Branch from '../models/Branch.js';
 import connectDB from '../config/db.js';
 
 const router = express.Router();
@@ -158,22 +159,22 @@ router.get('/backup', async (req, res) => {
   }
 });
 
-// Public route to fetch course link overrides
-router.get('/course-links', async (req, res) => {
+// Public route to fetch all branches
+router.get('/branches', async (req, res) => {
   try {
     await connectDB();
-    const settings = await Setting.findOne();
-    res.status(200).json(settings?.courseLinks || {});
+    const branches = await Branch.find();
+    res.status(200).json(branches);
   } catch (error) {
-    console.error('Error fetching course links:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching branches:', error);
+    res.status(500).json({ message: 'Server error fetching branches' });
   }
 });
 
-// Admin route to update a single course link override
-router.put('/course-links', async (req, res) => {
+// Admin route to update a course URL
+router.put('/branches/:branchName/courses/:courseId', async (req, res) => {
   const password = req.headers['x-admin-password'];
-  const { key, url } = req.body;
+  const { url } = req.body;
   
   try {
     await connectDB();
@@ -182,17 +183,25 @@ router.put('/course-links', async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
     }
 
-    if (!settings.courseLinks) {
-      settings.courseLinks = new Map();
+    const branch = await Branch.findOne({ name: req.params.branchName });
+    if (!branch) {
+      return res.status(404).json({ message: 'Branch not found' });
     }
     
-    settings.courseLinks.set(key, url);
-    await settings.save();
+    const course = branch.courses.id(req.params.courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
     
-    res.status(200).json({ message: 'Link updated successfully', courseLinks: settings.courseLinks });
+    course.url = url;
+    await branch.save();
+    
+    // Return all branches to easily update state
+    const allBranches = await Branch.find();
+    res.status(200).json({ message: 'Course updated', branches: allBranches });
   } catch (error) {
-    console.error('Error updating course link:', error);
-    res.status(500).json({ message: 'Server error updating link' });
+    console.error('Error updating course:', error);
+    res.status(500).json({ message: 'Server error updating course' });
   }
 });
 

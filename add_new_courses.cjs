@@ -8,26 +8,19 @@ if (!content.includes('Zap')) {
 }
 
 const branches = [
-  { name: 'AASTMT-Alex (AbuQir)', prefix: 'AASTMT-ALex' },
-  { name: 'AASTMT-Miami', prefix: 'AASTMT-Miami' },
-  { name: 'AASTMT-Dokki', prefix: 'AAST-IECDokki' },
-  { name: 'AASTMT-Fouad', prefix: 'AAST-IECFouad' },
-  { name: 'AASTMT-Alamein', prefix: 'AASTMT-Alamein' },
-  { name: 'AASTMT-Smart Village', prefix: 'AASTMT-SV' },
-  { name: 'AASTMT-Aswan', prefix: 'AASTMT-Aswan' },
-  { name: 'AASTMT-ENG (Sheraton)', prefix: 'AASTMT-ENG' },
   { name: 'AAST-PORTSAID', prefix: 'AASTMT-PORTSAID' }
 ];
 
 for (const b of branches) {
   const safeName = b.name.replace(/[()]/g, '\\$&');
-  const regex = new RegExp(`('${safeName}': \\[[\\s\\S]*?\\n)(  \\],)`, 'm');
+  const regex = new RegExp(`('${safeName}': \\[[\\s\\S]*?\\n)(  \\])`, 'm');
   
   const transmission = `    { shortName: 'Transmission', longName: 'Transmission_Course_${b.prefix}', code: 'TBA', icon: Activity, color: 'text-pink-600', bg: 'bg-pink-50', url: '' },`;
   const digitalPower = `    { shortName: 'Digital Power', longName: 'Digital Power_Course_${b.prefix}', code: 'TBA', icon: Zap, color: 'text-yellow-600', bg: 'bg-yellow-50', url: '' },`;
   const wireless = `    { shortName: 'Wireless Domain', longName: 'Wireless Domain_Course_${b.prefix}', code: 'TBA', icon: Wifi, color: 'text-teal-600', bg: 'bg-teal-50', url: '' },`;
+  const computing = `    { shortName: 'Computing', longName: 'Computing_Course_${b.prefix}', code: 'TBA', icon: Monitor, color: 'text-fuchsia-600', bg: 'bg-fuchsia-50', url: '' },`;
   
-  content = content.replace(regex, `$1${transmission}\n${digitalPower}\n${wireless}\n$2`);
+  content = content.replace(regex, `$1${computing}\n${transmission}\n${digitalPower}\n${wireless}\n$2`);
 }
 
 fs.writeFileSync(file, content);

@@ -4,7 +4,8 @@ import axios from 'axios';
 import { Download, Search, ArrowUpDown, ChevronLeft, ChevronRight, LogOut, Database, Users, BookOpen, ExternalLink, Key, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { BRANCH_CLASSES } from '../data/courses';
+
+import * as LucideIcons from 'lucide-react';
 import NetworkBackground from '../components/NetworkBackground';
 import CustomSelect from '../components/CustomSelect';
 import Loader from '../components/Loader';
@@ -90,7 +91,7 @@ function Admin() {
     }
   };
 
-  const [courseLinks, setCourseLinks] = useState({});
+  const [branchesData, setBranchesData] = useState([]);
   const [editingLink, setEditingLink] = useState(null);
   const [newUrl, setNewUrl] = useState('');
 
@@ -99,7 +100,7 @@ function Admin() {
     if (!adminPassword) {
       navigate('/');
     } else {
-      fetchCourseLinks();
+      fetchBranches();
     }
   }, [navigate]);
 
@@ -110,25 +111,24 @@ function Admin() {
     }
   }, [page, searchId, searchName, filterBranch, sortOrder, navigate]);
 
-  const fetchCourseLinks = async () => {
+  const fetchBranches = async () => {
     try {
-      const response = await axios.get('/api/students/course-links');
-      setCourseLinks(response.data);
+      const response = await axios.get('/api/students/branches');
+      setBranchesData(response.data);
     } catch (err) {
-      console.error('Failed to fetch course links:', err);
+      console.error('Failed to fetch branches:', err);
     }
   };
 
-  const saveCourseLink = async (branchName, shortName) => {
+  const saveCourseLink = async (branchName, courseId) => {
     const adminPassword = sessionStorage.getItem('adminPassword');
     const toastId = toast.loading('Saving link...');
-    const key = `${branchName}_${shortName}`;
     try {
-      const response = await axios.put('/api/students/course-links', 
-        { key, url: newUrl }, 
+      const response = await axios.put(`/api/students/branches/${branchName}/courses/${courseId}`, 
+        { url: newUrl }, 
         { headers: { 'x-admin-password': adminPassword } }
       );
-      setCourseLinks(response.data.courseLinks);
+      setBranchesData(response.data.branches);
       setEditingLink(null);
       toast.success('Link saved!', { id: toastId });
     } catch (err) {
@@ -498,28 +498,28 @@ function Admin() {
 
           {activeTab === 'classes' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {Object.entries(BRANCH_CLASSES).map(([branchName, courses]) => (
-                <div key={branchName} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              {branchesData.map((branch) => (
+                <div key={branch.name} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                   <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-                    <h3 className="text-lg font-black text-gray-900">{branchName}</h3>
+                    <h3 className="text-lg font-black text-gray-900">{branch.name}</h3>
                   </div>
                   <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {courses.map((course, idx) => {
-                      const courseKey = `${branchName}_${course.shortName}`;
-                      const currentUrl = courseLinks[courseKey] !== undefined ? courseLinks[courseKey] : course.url;
-                      const isEditing = editingLink?.branchName === branchName && editingLink?.shortName === course.shortName;
+                    {branch.courses.map((course) => {
+                      const Icon = LucideIcons[course.icon] || LucideIcons.BookOpen;
+                      const currentUrl = course.url;
+                      const isEditing = editingLink?.branchName === branch.name && editingLink?.shortName === course.shortName;
 
                       return (
-                      <div key={idx} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
+                      <div key={course._id} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
                         <div className="flex justify-between items-start mb-4">
                           <div className={`p-3 rounded-xl ${course.bg} ${course.color}`}>
-                            <course.icon size={24} />
+                            <Icon size={24} />
                           </div>
                           <div className="flex gap-2">
                             {isEditing ? (
                               <>
                                 <button 
-                                  onClick={() => saveCourseLink(branchName, course.shortName)}
+                                  onClick={() => saveCourseLink(branch.name, course._id)}
                                   className="p-2 text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 transition-colors"
                                 >
                                   Save
@@ -535,7 +535,7 @@ function Admin() {
                               <>
                                 <button 
                                   onClick={() => {
-                                    setEditingLink({ branchName, shortName: course.shortName });
+                                    setEditingLink({ branchName: branch.name, shortName: course.shortName });
                                     setNewUrl(currentUrl || '');
                                   }}
                                   className="p-2 text-gray-500 hover:text-blue-500 bg-white rounded-lg shadow-sm border border-gray-100 transition-colors text-xs font-bold"

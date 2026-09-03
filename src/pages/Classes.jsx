@@ -2,33 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ShieldAlert, ExternalLink, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as LucideIcons from 'lucide-react';
 import NetworkBackground from '../components/NetworkBackground';
-import { BRANCH_CLASSES } from '../data/courses';
+import Loader from '../components/Loader';
 
 function Classes() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const branch = searchParams.get('branch');
+  const branchName = searchParams.get('branch');
   const [showModal, setShowModal] = useState(true);
   const [hasAgreed, setHasAgreed] = useState(false);
   const studentName = sessionStorage.getItem('studentName');
-  const [courseLinks, setCourseLinks] = useState({});
+  const [branchData, setBranchData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!branch || !BRANCH_CLASSES[branch]) {
+    if (!branchName) {
       navigate('/');
-    } else {
-      // Fetch dynamic links
-      fetch('/api/students/course-links')
-        .then(res => res.json())
-        .then(data => setCourseLinks(data))
-        .catch(err => console.error(err));
+      return;
     }
-  }, [branch, navigate]);
+    
+    // Fetch dynamic branch data
+    fetch('/api/students/branches')
+      .then(res => res.json())
+      .then(data => {
+        const branch = data.find(b => b.name === branchName);
+        if (!branch) {
+          navigate('/');
+        } else {
+          setBranchData(branch);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [branchName, navigate]);
 
-  if (!branch || !BRANCH_CLASSES[branch]) return null;
+  if (loading) return <Loader />;
+  if (!branchData) return null;
 
-  const classesList = BRANCH_CLASSES[branch];
+  const classesList = branchData.courses;
 
   return (
     <div className="relative h-screen w-full overflow-y-auto overflow-x-hidden bg-[#0f172a]">
@@ -152,16 +167,15 @@ function Classes() {
             <div className="shrink-0 mt-2 md:mt-0">
               <span className="inline-flex items-center gap-2 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#1d4ed8] px-5 py-2.5 rounded-full font-bold text-sm tracking-wide">
                 <div className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse"></div>
-                {branch} Branch
+                {branchName} Branch
               </span>
             </div>
           </header>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {classesList.map((course, idx) => {
-              const Icon = course.icon;
-              const courseKey = `${branch}_${course.shortName}`;
-              const currentUrl = courseLinks[courseKey] !== undefined ? courseLinks[courseKey] : course.url;
+              const Icon = LucideIcons[course.icon] || LucideIcons.BookOpen;
+              const currentUrl = course.url;
 
               return (
                 <div key={idx} className="bg-white rounded-2xl p-6 lg:p-7 min-h-[14rem] shadow-md border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">

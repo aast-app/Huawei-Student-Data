@@ -50,6 +50,13 @@ function Home() {
   
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
   const [isLoadingStudent, setIsLoadingStudent] = useState(false);
+  const [branches, setBranches] = useState([]);
+
+  React.useEffect(() => {
+    axios.get('/api/students/branches')
+      .then(res => setBranches(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -238,17 +245,7 @@ function Home() {
                     formik.setFieldTouched('branch', true, false);
                   }}
                   error={formik.touched.branch && Boolean(formik.errors.branch)}
-                  options={[
-                    { value: 'AASTMT-Alex (AbuQir)', label: 'AASTMT-Alex (AbuQir)' },
-                    { value: 'AASTMT-Miami', label: 'AASTMT-Miami' },
-                    { value: 'AASTMT-Dokki', label: 'AASTMT-Dokki' },
-                    { value: 'AASTMT-Fouad', label: 'AASTMT-Fouad' },
-                    { value: 'AASTMT-Alamein', label: 'AASTMT-Alamein' },
-                    { value: 'AASTMT-Smart Village', label: 'AASTMT-Smart Village' },
-                    { value: 'AASTMT-Aswan', label: 'AASTMT-Aswan' },
-                    { value: 'AASTMT-ENG (Sheraton)', label: 'AASTMT-ENG (Sheraton)' },
-                    { value: 'AAST-PORTSAID', label: 'AAST-PORTSAID' }
-                  ]}
+                  options={branches.map(b => ({ value: b.name, label: b.name }))}
                 />
                 {formik.errors.branch && formik.touched.branch && <div className="error-text">{formik.errors.branch}</div>}
               </div>

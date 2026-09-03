@@ -96,6 +96,21 @@ function Admin() {
     }
   };
 
+  const getBranchGlow = (branchName) => {
+    switch (branchName) {
+      case 'AASTMT-Alex (AbuQir)': return 'hover:shadow-blue-500/20 hover:border-blue-200 hover:bg-blue-50/10';
+      case 'AASTMT-Miami': return 'hover:shadow-cyan-500/20 hover:border-cyan-200 hover:bg-cyan-50/10';
+      case 'AASTMT-Dokki': return 'hover:shadow-amber-500/20 hover:border-amber-200 hover:bg-amber-50/10';
+      case 'AASTMT-Fouad': return 'hover:shadow-emerald-500/20 hover:border-emerald-200 hover:bg-emerald-50/10';
+      case 'AASTMT-Alamein': return 'hover:shadow-rose-500/20 hover:border-rose-200 hover:bg-rose-50/10';
+      case 'AASTMT-Smart Village': return 'hover:shadow-teal-500/20 hover:border-teal-200 hover:bg-teal-50/10';
+      case 'AASTMT-Aswan': return 'hover:shadow-purple-500/20 hover:border-purple-200 hover:bg-purple-50/10';
+      case 'AASTMT-ENG (Sheraton)': return 'hover:shadow-fuchsia-500/20 hover:border-fuchsia-200 hover:bg-fuchsia-50/10';
+      case 'AAST-PORTSAID': return 'hover:shadow-lime-500/20 hover:border-lime-200 hover:bg-lime-50/10';
+      default: return 'hover:shadow-gray-500/20 hover:border-gray-200 hover:bg-gray-50/10';
+    }
+  };
+
   const [branchesData, setBranchesData] = useState([]);
   const [selectedClassesBranch, setSelectedClassesBranch] = useState('');
   const [editingLink, setEditingLink] = useState(null);
@@ -532,9 +547,10 @@ function Admin() {
 
                       const enhancedBg = course.bg.replace('50', '100');
                       const ringColor = course.bg.replace('bg-', 'ring-').replace('50', '200');
+                      const branchGlow = getBranchGlow(branch.name);
 
                       return (
-                      <div key={course._id} className="flex flex-col p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-all duration-300 min-h-[14rem]">
+                      <div key={course._id} className={`flex flex-col p-6 rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 min-h-[14rem] ${branchGlow}`}>
                         <div className="flex justify-between items-start mb-6">
                           <div className={`p-4 rounded-xl ${enhancedBg} ${course.color} ring-1 ring-inset ${ringColor}`}>
                             <Icon size={28} />

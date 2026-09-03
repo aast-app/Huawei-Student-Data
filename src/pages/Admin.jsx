@@ -593,7 +593,7 @@ function Admin() {
                         
                         <div className="mt-auto">
                           <h4 className="text-xl font-black text-gray-900">{course.shortName}</h4>
-                          <p className="text-[10px] sm:text-xs font-bold text-gray-400 mt-1 uppercase tracking-wider">{course.code}</p>
+                          <p className="text-[10px] sm:text-xs font-bold text-gray-400 mt-1 uppercase tracking-wider">{course.longName}</p>
                         </div>
                       </div>
                     )})}

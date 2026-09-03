@@ -12,10 +12,17 @@ function Classes() {
   const [showModal, setShowModal] = useState(true);
   const [hasAgreed, setHasAgreed] = useState(false);
   const studentName = sessionStorage.getItem('studentName');
+  const [courseLinks, setCourseLinks] = useState({});
 
   useEffect(() => {
     if (!branch || !BRANCH_CLASSES[branch]) {
       navigate('/');
+    } else {
+      // Fetch dynamic links
+      fetch('/api/students/course-links')
+        .then(res => res.json())
+        .then(data => setCourseLinks(data))
+        .catch(err => console.error(err));
     }
   }, [branch, navigate]);
 
@@ -153,6 +160,9 @@ function Classes() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {classesList.map((course, idx) => {
               const Icon = course.icon;
+              const courseKey = `${branch}_${course.shortName}`;
+              const currentUrl = courseLinks[courseKey] !== undefined ? courseLinks[courseKey] : course.url;
+
               return (
                 <div key={idx} className="bg-white rounded-2xl p-6 lg:p-7 min-h-[14rem] shadow-md border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative">
                   
@@ -166,18 +176,20 @@ function Classes() {
                     </div>
                   </div>
                   
-                  {course.url ? (
+                  {currentUrl ? (
                     <a 
-                      href={course.url} 
+                      href={currentUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="mt-auto flex items-center justify-center gap-2 w-full bg-[#111827] hover:bg-[#3b82f6] text-white font-bold py-3.5 px-4 rounded-xl transition-colors duration-300 shadow-md text-base"
+                      className="mt-auto group/btn flex items-center justify-between w-full bg-[#f8fafc] hover:bg-[#3b82f6] text-[#3b82f6] hover:text-white px-5 py-4 rounded-xl font-bold transition-all duration-300 border border-[#e2e8f0] hover:border-transparent"
                     >
-                      Launch Course <ExternalLink size={18} strokeWidth={2.5} />
+                      <span>Course Link</span>
+                      <ExternalLink size={20} className="transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                     </a>
                   ) : (
-                    <div className="mt-auto flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-400 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-base">
-                      <Lock size={18} strokeWidth={2.5} /> Locked
+                    <div className="mt-auto flex items-center justify-between w-full bg-gray-50 text-gray-400 px-5 py-4 rounded-xl font-bold border border-gray-200 cursor-not-allowed opacity-70">
+                      <span>Course Link</span>
+                      <ExternalLink size={20} />
                     </div>
                   )}
                 </div>

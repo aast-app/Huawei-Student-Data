@@ -158,6 +158,44 @@ router.get('/backup', async (req, res) => {
   }
 });
 
+// Public route to fetch course link overrides
+router.get('/course-links', async (req, res) => {
+  try {
+    await connectDB();
+    const settings = await Setting.findOne();
+    res.status(200).json(settings?.courseLinks || {});
+  } catch (error) {
+    console.error('Error fetching course links:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Admin route to update a single course link override
+router.put('/course-links', async (req, res) => {
+  const password = req.headers['x-admin-password'];
+  const { key, url } = req.body;
+  
+  try {
+    await connectDB();
+    const settings = await Setting.findOne();
+    if (!settings || password !== settings.adminPassword) {
+      return res.status(401).json({ message: 'Unauthorized: Incorrect password' });
+    }
+
+    if (!settings.courseLinks) {
+      settings.courseLinks = new Map();
+    }
+    
+    settings.courseLinks.set(key, url);
+    await settings.save();
+    
+    res.status(200).json({ message: 'Link updated successfully', courseLinks: settings.courseLinks });
+  } catch (error) {
+    console.error('Error updating course link:', error);
+    res.status(500).json({ message: 'Server error updating link' });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   const password = req.headers['x-admin-password'];
   

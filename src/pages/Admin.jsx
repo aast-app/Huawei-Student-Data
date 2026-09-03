@@ -90,10 +90,16 @@ function Admin() {
     }
   };
 
+  const [courseLinks, setCourseLinks] = useState({});
+  const [editingLink, setEditingLink] = useState(null);
+  const [newUrl, setNewUrl] = useState('');
+
   useEffect(() => {
     const adminPassword = sessionStorage.getItem('adminPassword');
     if (!adminPassword) {
       navigate('/');
+    } else {
+      fetchCourseLinks();
     }
   }, [navigate]);
 
@@ -103,6 +109,32 @@ function Admin() {
       fetchStudents();
     }
   }, [page, searchId, searchName, filterBranch, sortOrder, navigate]);
+
+  const fetchCourseLinks = async () => {
+    try {
+      const response = await axios.get('/api/students/course-links');
+      setCourseLinks(response.data);
+    } catch (err) {
+      console.error('Failed to fetch course links:', err);
+    }
+  };
+
+  const saveCourseLink = async (branchName, shortName) => {
+    const adminPassword = sessionStorage.getItem('adminPassword');
+    const toastId = toast.loading('Saving link...');
+    const key = `${branchName}_${shortName}`;
+    try {
+      const response = await axios.put('/api/students/course-links', 
+        { key, url: newUrl }, 
+        { headers: { 'x-admin-password': adminPassword } }
+      );
+      setCourseLinks(response.data.courseLinks);
+      setEditingLink(null);
+      toast.success('Link saved!', { id: toastId });
+    } catch (err) {
+      toast.error('Failed to save link', { id: toastId });
+    }
+  };
 
   const fetchStudents = async () => {
     const adminPassword = sessionStorage.getItem('adminPassword');
@@ -472,30 +504,77 @@ function Admin() {
                     <h3 className="text-lg font-black text-gray-900">{branchName}</h3>
                   </div>
                   <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {courses.map((course, idx) => (
+                    {courses.map((course, idx) => {
+                      const courseKey = `${branchName}_${course.shortName}`;
+                      const currentUrl = courseLinks[courseKey] !== undefined ? courseLinks[courseKey] : course.url;
+                      const isEditing = editingLink?.branchName === branchName && editingLink?.shortName === course.shortName;
+
+                      return (
                       <div key={idx} className="flex flex-col p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-300">
                         <div className="flex justify-between items-start mb-4">
                           <div className={`p-3 rounded-xl ${course.bg} ${course.color}`}>
                             <course.icon size={24} />
                           </div>
-                          {course.url ? (
-                            <a 
-                              href={course.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 text-gray-400 hover:text-[#3b82f6] bg-white rounded-lg shadow-sm border border-gray-100 transition-colors"
-                            >
-                              <ExternalLink size={16} />
-                            </a>
-                          ) : (
-                            <div className="p-2 text-gray-300 bg-gray-100 rounded-lg shadow-sm border border-gray-200 cursor-not-allowed opacity-60" title="Link not available">
-                              <ExternalLink size={16} />
-                            </div>
-                          )}
+                          <div className="flex gap-2">
+                            {isEditing ? (
+                              <>
+                                <button 
+                                  onClick={() => saveCourseLink(branchName, course.shortName)}
+                                  className="p-2 text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 transition-colors"
+                                >
+                                  Save
+                                </button>
+                                <button 
+                                  onClick={() => setEditingLink(null)}
+                                  className="p-2 text-gray-500 bg-gray-200 rounded-lg shadow-sm hover:bg-gray-300 transition-colors"
+                                >
+                                  <X size={16} />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button 
+                                  onClick={() => {
+                                    setEditingLink({ branchName, shortName: course.shortName });
+                                    setNewUrl(currentUrl || '');
+                                  }}
+                                  className="p-2 text-gray-500 hover:text-blue-500 bg-white rounded-lg shadow-sm border border-gray-100 transition-colors text-xs font-bold"
+                                >
+                                  Edit Link
+                                </button>
+                                {currentUrl ? (
+                                  <a 
+                                    href={currentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 text-gray-400 hover:text-[#3b82f6] bg-white rounded-lg shadow-sm border border-gray-100 transition-colors"
+                                  >
+                                    <ExternalLink size={16} />
+                                  </a>
+                                ) : (
+                                  <div className="p-2 text-gray-300 bg-gray-100 rounded-lg shadow-sm border border-gray-200 cursor-not-allowed opacity-60" title="Link not available">
+                                    <ExternalLink size={16} />
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </div>
+                        
+                        {isEditing ? (
+                          <input 
+                            type="text"
+                            value={newUrl}
+                            onChange={(e) => setNewUrl(e.target.value)}
+                            placeholder="Enter course URL..."
+                            className="w-full text-sm p-2 border border-gray-300 rounded mb-2"
+                            autoFocus
+                          />
+                        ) : null}
+                        
                         <h4 className="font-bold text-gray-900 mt-auto">{course.shortName}</h4>
                       </div>
-                    ))}
+                    )})}
                   </div>
                 </div>
               ))}
